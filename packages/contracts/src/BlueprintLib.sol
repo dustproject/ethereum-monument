@@ -24,7 +24,7 @@ library BlueprintLib {
   using LibBit for uint256;
   using SSTORE2 for address;
 
-  bytes1 constant _VERSION = 0x01;
+  bytes1 private constant _VERSION = 0x01;
 
   function getBlock(Vec3 coord) internal view returns (ObjectType blockType, Orientation orientation) {
     Vec3 chunkCoord = coord.toChunkCoord();

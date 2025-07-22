@@ -2,13 +2,11 @@
 pragma solidity >=0.8.24;
 
 import { IWorld } from "@dust/world/src/codegen/world/IWorld.sol";
-import { ResourceId } from "@latticexyz/store/src/ResourceId.sol";
 import { WorldConsumer } from "@latticexyz/world-consumer/src/experimental/WorldConsumer.sol";
 import { System } from "@latticexyz/world/src/System.sol";
 import { WorldContextConsumer } from "@latticexyz/world/src/WorldContext.sol";
 
 import { defaultProgramSystem } from "@dust/programs/src/codegen/systems/DefaultProgramSystemLib.sol";
-import { BaseEntity } from "@dust/world/src/codegen/tables/BaseEntity.sol";
 import { EntityId, EntityTypeLib } from "@dust/world/src/types/EntityId.sol";
 import { ObjectType, ObjectTypes } from "@dust/world/src/types/ObjectType.sol";
 
@@ -35,8 +33,6 @@ import {
 
 import { EntityOrientation } from "@dust/world/src/codegen/tables/EntityOrientation.sol";
 import { Orientation } from "@dust/world/src/types/Orientation.sol";
-import { ProgramId } from "@dust/world/src/types/ProgramId.sol";
-import { Vec3 } from "@dust/world/src/types/Vec3.sol";
 
 import { Admin } from "./codegen/tables/Admin.sol";
 
@@ -46,9 +42,6 @@ import { ForceFieldDamage } from "./codegen/tables/ForceFieldDamage.sol";
 import { ForceField } from "./codegen/tables/ForceField.sol";
 
 import { BlueprintLib } from "./BlueprintLib.sol";
-
-import { getForceField } from "./utils/getForceField.sol";
-import { isSafeCall } from "./utils/isSafeCall.sol";
 
 contract ForceFieldProgram is
   IAttachProgram,
