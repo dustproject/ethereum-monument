@@ -1,0 +1,12 @@
+{
+  "name": "ethereum-monument",
+  "private": true,
+  "scripts": {
+    "build": "pnpm recursive run build"
+  },
+  "engines": {
+    "node": "^20",
+    "pnpm": "^9"
+  },
+  "packageManager": "pnpm@9.14.2"
+}

@@ -1,0 +1,83 @@
+import { defineWorld } from "@latticexyz/world";
+
+export default defineWorld({
+  codegen: {
+    generateSystemLibraries: true,
+  },
+  enums: {
+    Action: [
+      "MineBlueprint",
+      "BuildBlueprint",
+      "BuildScaffold",
+      "HitForceField",
+      "FuelForceField",
+      "Deposit",
+    ],
+  },
+  userTypes: {
+    ObjectType: {
+      filePath: "@dust/world/src/types/ObjectType.sol",
+      type: "uint16",
+    },
+    EntityId: {
+      filePath: "@dust/world/src/types/EntityId.sol",
+      type: "bytes32",
+    },
+    ProgramId: {
+      filePath: "@dust/world/src/types/ProgramId.sol",
+      type: "bytes32",
+    },
+    ResourceId: {
+      filePath: "@latticexyz/store/src/ResourceId.sol",
+      type: "bytes32",
+    },
+  },
+  namespace: "eth-monument",
+  systems: {
+    ForceFieldProgram: {
+      openAccess: false,
+      deploy: { registerWorldFunctions: false },
+    },
+    AdminSystem: {
+      deploy: { registerWorldFunctions: false },
+    },
+  },
+  tables: {
+    Admin: {
+      schema: {
+        admin: "address",
+      },
+      key: [],
+    },
+    Contribution: {
+      schema: {
+        player: "address",
+        contribution: "int256",
+      },
+      key: ["player"],
+    },
+    // ForceField
+    ForceField: {
+      schema: {
+        entityId: "EntityId",
+      },
+      key: [],
+    },
+    AllowedPrograms: {
+      schema: {
+        program: "ProgramId",
+        allowed: "bool",
+      },
+      key: ["program"],
+    },
+    BlueprintChunk: {
+      schema: {
+        x: "int32",
+        y: "int32",
+        z: "int32",
+        pointer: "address",
+      },
+      key: ["x", "y", "z"],
+    },
+  },
+});
