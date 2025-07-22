@@ -26,10 +26,6 @@ contract AdminSystem is System {
     Admin.set(admin);
   }
 
-  function setBlueprintChunk(Vec3 chunkCoord, bytes memory chunkData) external onlyAdmin {
-    BlueprintLib.write(chunkCoord, chunkData);
-  }
-
   function setBlueprintChunks(BlueprintChunkData[] memory chunks) external onlyAdmin {
     for (uint256 i = 0; i < chunks.length; i++) {
       BlueprintLib.write(chunks[i].chunkCoord, chunks[i].data);

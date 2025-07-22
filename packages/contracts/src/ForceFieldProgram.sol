@@ -138,10 +138,7 @@ contract ForceFieldProgram is
   }
 
   function onMine(MineContext calldata ctx) external view onlyWorld {
-    // TODO: use non-root .baseEntity() once supported by EntityId
-    EntityId mined = EntityTypeLib.encodeBlock(ctx.coord);
-    EntityId base = BaseEntity.get(mined);
-    mined = base.unwrap() == 0 ? mined : base;
+    // EntityId mined = EntityTypeLib.encodeBlock(ctx.coord).baseEntityId();
 
     // Additional protection for smart entities
     require(!ctx.objectType.isSmartEntity(), "Cannot mine smart entities");
