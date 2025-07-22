@@ -4,16 +4,6 @@ export default defineWorld({
   codegen: {
     generateSystemLibraries: true,
   },
-  enums: {
-    Action: [
-      "MineBlueprint",
-      "BuildBlueprint",
-      "BuildScaffold",
-      "HitForceField",
-      "FuelForceField",
-      "Deposit",
-    ],
-  },
   userTypes: {
     ObjectType: {
       filePath: "@dust/world/src/types/ObjectType.sol",
@@ -52,7 +42,15 @@ export default defineWorld({
     Contribution: {
       schema: {
         player: "address",
-        contribution: "int256",
+        objectType: "ObjectType",
+        contribution: "uint256",
+      },
+      key: ["player", "objectType"],
+    },
+    ForceFieldDamage: {
+      schema: {
+        player: "address",
+        damage: "uint256",
       },
       key: ["player"],
     },
@@ -62,13 +60,6 @@ export default defineWorld({
         entityId: "EntityId",
       },
       key: [],
-    },
-    AllowedPrograms: {
-      schema: {
-        program: "ProgramId",
-        allowed: "bool",
-      },
-      key: ["program"],
     },
     BlueprintChunk: {
       schema: {

@@ -5,6 +5,6 @@ pragma solidity >=0.8.24;
 
 import { Admin } from "./tables/Admin.sol";
 import { Contribution } from "./tables/Contribution.sol";
+import { ForceFieldDamage } from "./tables/ForceFieldDamage.sol";
 import { ForceField } from "./tables/ForceField.sol";
-import { AllowedPrograms } from "./tables/AllowedPrograms.sol";
 import { BlueprintChunk } from "./tables/BlueprintChunk.sol";

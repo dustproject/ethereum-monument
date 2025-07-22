@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.8.24;
 
+import { IWorld } from "@dust/world/src/codegen/world/IWorld.sol";
 import { ResourceId } from "@latticexyz/store/src/ResourceId.sol";
 import { WorldConsumer } from "@latticexyz/world-consumer/src/experimental/WorldConsumer.sol";
-import { IWorld } from "@dust/world/src/codegen/world/IWorld.sol";
 import { System } from "@latticexyz/world/src/System.sol";
 import { WorldContextConsumer } from "@latticexyz/world/src/WorldContext.sol";
 
@@ -19,10 +19,10 @@ import {
   DetachProgramContext,
   FuelContext,
   HitContext,
-  IAttachProgram,
-  IDetachProgram,
   IAddFragment,
+  IAttachProgram,
   IBuild,
+  IDetachProgram,
   IFuel,
   IHit,
   IMine,
@@ -39,6 +39,9 @@ import { ProgramId } from "@dust/world/src/types/ProgramId.sol";
 import { Vec3 } from "@dust/world/src/types/Vec3.sol";
 
 import { Admin } from "./codegen/tables/Admin.sol";
+
+import { Contribution } from "./codegen/tables/Contribution.sol";
+import { ForceFieldDamage } from "./codegen/tables/ForceFieldDamage.sol";
 
 import { ForceField } from "./codegen/tables/ForceField.sol";
 
@@ -60,11 +63,12 @@ contract ForceFieldProgram is
   System,
   WorldConsumer(IWorld(address(0)))
 {
-  function validateProgram(ValidateProgramContext calldata ctx) external view {
+  function validateProgram(ValidateProgramContext calldata) external pure {
     revert("Program not allowed by forcefield");
   }
 
   function onAttachProgram(AttachProgramContext calldata ctx) public override onlyWorld {
+    // TODO: who can attach?
     require(ctx.target.getObjectType() == ObjectTypes.ForceField, "Target must be a force field");
     require(ForceField.get().unwrap() == 0, "Force field already exists");
     ForceField.set(ctx.target);
@@ -74,7 +78,8 @@ contract ForceFieldProgram is
     defaultProgramSystem.setAccessGroup(ctx.target, admin);
   }
 
-  function onDetachProgram(DetachProgramContext calldata ctx) public override onlyWorld {
+  function onDetachProgram(DetachProgramContext calldata) public override onlyWorld {
+    // TODO: who can detach?
     ForceField.deleteRecord();
   }
 
@@ -89,7 +94,8 @@ contract ForceFieldProgram is
       return;
     }
 
-    // TODO
+    uint256 current = Contribution.get(player, ObjectTypes.Battery);
+    Contribution.set(player, ObjectTypes.Battery, current + ctx.fuelAmount);
   }
 
   function onHit(HitContext calldata ctx) external onlyWorld {
@@ -98,16 +104,16 @@ contract ForceFieldProgram is
       return;
     }
 
-    // TODO
+    uint256 current = ForceFieldDamage.get(player);
+    ForceFieldDamage.set(player, current + ctx.damage);
   }
 
   function onAddFragment(AddFragmentContext calldata ctx) external view onlyWorld {
-    address player = ctx.caller.getPlayerAddress();
     bool hasBlueprint = BlueprintLib.hasBlueprint(ctx.added.getPosition().fromFragmentCoord());
     require(hasBlueprint, "Added fragment does not have a blueprint");
   }
 
-  function onRemoveFragment(RemoveFragmentContext calldata ctx) external view onlyWorld {
+  function onRemoveFragment(RemoveFragmentContext calldata) external view onlyWorld {
     revert("Not allowed by forcefield");
   }
 
@@ -121,7 +127,8 @@ contract ForceFieldProgram is
     require(EntityOrientation.get(blockEntityId) == orientation, "Wrong blueprint direction");
 
     if (blueprintType == ctx.objectType) {
-      // TODO
+      uint256 current = Contribution.get(player, blueprintType);
+      Contribution.set(player, blueprintType, current + 1);
     } else if (blueprintType == ObjectTypes.Air) {
       require(ctx.objectType == ObjectTypes.Dirt, "Only dirt scaffold can be built here");
       // TODO
@@ -130,9 +137,7 @@ contract ForceFieldProgram is
     }
   }
 
-  function onMine(MineContext calldata ctx) external onlyWorld {
-    address player = ctx.caller.getPlayerAddress();
-
+  function onMine(MineContext calldata ctx) external view onlyWorld {
     // TODO: use non-root .baseEntity() once supported by EntityId
     EntityId mined = EntityTypeLib.encodeBlock(ctx.coord);
     EntityId base = BaseEntity.get(mined);

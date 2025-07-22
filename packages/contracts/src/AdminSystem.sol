@@ -8,13 +8,11 @@ import { ProgramId } from "@dust/world/src/types/ProgramId.sol";
 import { Vec3 } from "@dust/world/src/types/Vec3.sol";
 
 import { Admin } from "./codegen/tables/Admin.sol";
-import { AllowedPrograms } from "./codegen/tables/AllowedPrograms.sol";
 import { BlueprintChunk } from "./codegen/tables/BlueprintChunk.sol";
 
 import { BlueprintChunkData, BlueprintLib } from "./BlueprintLib.sol";
 
 contract AdminSystem is System {
-
   modifier onlyAdmin() {
     require(Admin.get() == _msgSender(), "Not the admin");
     _;

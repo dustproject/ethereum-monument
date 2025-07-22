@@ -16,6 +16,9 @@ import { Schema } from "@latticexyz/store/src/Schema.sol";
 import { EncodedLengths, EncodedLengthsLib } from "@latticexyz/store/src/EncodedLengths.sol";
 import { ResourceId } from "@latticexyz/store/src/ResourceId.sol";
 
+// Import user types
+import { ObjectType } from "@dust/world/src/types/ObjectType.sol";
+
 library Contribution {
   // Hex below is the result of `WorldResourceIdLib.encode({ namespace: "eth-monument", name: "Contribution", typeId: RESOURCE_TABLE });`
   ResourceId constant _tableId = ResourceId.wrap(0x74626574682d6d6f6e756d656e740000436f6e747269627574696f6e00000000);
@@ -23,18 +26,19 @@ library Contribution {
   FieldLayout constant _fieldLayout =
     FieldLayout.wrap(0x0020010020000000000000000000000000000000000000000000000000000000);
 
-  // Hex-encoded key schema of (address)
-  Schema constant _keySchema = Schema.wrap(0x0014010061000000000000000000000000000000000000000000000000000000);
-  // Hex-encoded value schema of (int256)
-  Schema constant _valueSchema = Schema.wrap(0x002001003f000000000000000000000000000000000000000000000000000000);
+  // Hex-encoded key schema of (address, uint16)
+  Schema constant _keySchema = Schema.wrap(0x0016020061010000000000000000000000000000000000000000000000000000);
+  // Hex-encoded value schema of (uint256)
+  Schema constant _valueSchema = Schema.wrap(0x002001001f000000000000000000000000000000000000000000000000000000);
 
   /**
    * @notice Get the table's key field names.
    * @return keyNames An array of strings with the names of key fields.
    */
   function getKeyNames() internal pure returns (string[] memory keyNames) {
-    keyNames = new string[](1);
+    keyNames = new string[](2);
     keyNames[0] = "player";
+    keyNames[1] = "objectType";
   }
 
   /**
@@ -63,53 +67,58 @@ library Contribution {
   /**
    * @notice Get contribution.
    */
-  function getContribution(address player) internal view returns (int256 contribution) {
-    bytes32[] memory _keyTuple = new bytes32[](1);
+  function getContribution(address player, ObjectType objectType) internal view returns (uint256 contribution) {
+    bytes32[] memory _keyTuple = new bytes32[](2);
     _keyTuple[0] = bytes32(uint256(uint160(player)));
+    _keyTuple[1] = bytes32(uint256(ObjectType.unwrap(objectType)));
 
     bytes32 _blob = StoreSwitch.getStaticField(_tableId, _keyTuple, 0, _fieldLayout);
-    return (int256(uint256(bytes32(_blob))));
+    return (uint256(bytes32(_blob)));
   }
 
   /**
    * @notice Get contribution.
    */
-  function _getContribution(address player) internal view returns (int256 contribution) {
-    bytes32[] memory _keyTuple = new bytes32[](1);
+  function _getContribution(address player, ObjectType objectType) internal view returns (uint256 contribution) {
+    bytes32[] memory _keyTuple = new bytes32[](2);
     _keyTuple[0] = bytes32(uint256(uint160(player)));
+    _keyTuple[1] = bytes32(uint256(ObjectType.unwrap(objectType)));
 
     bytes32 _blob = StoreCore.getStaticField(_tableId, _keyTuple, 0, _fieldLayout);
-    return (int256(uint256(bytes32(_blob))));
+    return (uint256(bytes32(_blob)));
   }
 
   /**
    * @notice Get contribution.
    */
-  function get(address player) internal view returns (int256 contribution) {
-    bytes32[] memory _keyTuple = new bytes32[](1);
+  function get(address player, ObjectType objectType) internal view returns (uint256 contribution) {
+    bytes32[] memory _keyTuple = new bytes32[](2);
     _keyTuple[0] = bytes32(uint256(uint160(player)));
+    _keyTuple[1] = bytes32(uint256(ObjectType.unwrap(objectType)));
 
     bytes32 _blob = StoreSwitch.getStaticField(_tableId, _keyTuple, 0, _fieldLayout);
-    return (int256(uint256(bytes32(_blob))));
+    return (uint256(bytes32(_blob)));
   }
 
   /**
    * @notice Get contribution.
    */
-  function _get(address player) internal view returns (int256 contribution) {
-    bytes32[] memory _keyTuple = new bytes32[](1);
+  function _get(address player, ObjectType objectType) internal view returns (uint256 contribution) {
+    bytes32[] memory _keyTuple = new bytes32[](2);
     _keyTuple[0] = bytes32(uint256(uint160(player)));
+    _keyTuple[1] = bytes32(uint256(ObjectType.unwrap(objectType)));
 
     bytes32 _blob = StoreCore.getStaticField(_tableId, _keyTuple, 0, _fieldLayout);
-    return (int256(uint256(bytes32(_blob))));
+    return (uint256(bytes32(_blob)));
   }
 
   /**
    * @notice Set contribution.
    */
-  function setContribution(address player, int256 contribution) internal {
-    bytes32[] memory _keyTuple = new bytes32[](1);
+  function setContribution(address player, ObjectType objectType, uint256 contribution) internal {
+    bytes32[] memory _keyTuple = new bytes32[](2);
     _keyTuple[0] = bytes32(uint256(uint160(player)));
+    _keyTuple[1] = bytes32(uint256(ObjectType.unwrap(objectType)));
 
     StoreSwitch.setStaticField(_tableId, _keyTuple, 0, abi.encodePacked((contribution)), _fieldLayout);
   }
@@ -117,9 +126,10 @@ library Contribution {
   /**
    * @notice Set contribution.
    */
-  function _setContribution(address player, int256 contribution) internal {
-    bytes32[] memory _keyTuple = new bytes32[](1);
+  function _setContribution(address player, ObjectType objectType, uint256 contribution) internal {
+    bytes32[] memory _keyTuple = new bytes32[](2);
     _keyTuple[0] = bytes32(uint256(uint160(player)));
+    _keyTuple[1] = bytes32(uint256(ObjectType.unwrap(objectType)));
 
     StoreCore.setStaticField(_tableId, _keyTuple, 0, abi.encodePacked((contribution)), _fieldLayout);
   }
@@ -127,9 +137,10 @@ library Contribution {
   /**
    * @notice Set contribution.
    */
-  function set(address player, int256 contribution) internal {
-    bytes32[] memory _keyTuple = new bytes32[](1);
+  function set(address player, ObjectType objectType, uint256 contribution) internal {
+    bytes32[] memory _keyTuple = new bytes32[](2);
     _keyTuple[0] = bytes32(uint256(uint160(player)));
+    _keyTuple[1] = bytes32(uint256(ObjectType.unwrap(objectType)));
 
     StoreSwitch.setStaticField(_tableId, _keyTuple, 0, abi.encodePacked((contribution)), _fieldLayout);
   }
@@ -137,9 +148,10 @@ library Contribution {
   /**
    * @notice Set contribution.
    */
-  function _set(address player, int256 contribution) internal {
-    bytes32[] memory _keyTuple = new bytes32[](1);
+  function _set(address player, ObjectType objectType, uint256 contribution) internal {
+    bytes32[] memory _keyTuple = new bytes32[](2);
     _keyTuple[0] = bytes32(uint256(uint160(player)));
+    _keyTuple[1] = bytes32(uint256(ObjectType.unwrap(objectType)));
 
     StoreCore.setStaticField(_tableId, _keyTuple, 0, abi.encodePacked((contribution)), _fieldLayout);
   }
@@ -147,9 +159,10 @@ library Contribution {
   /**
    * @notice Delete all data for given keys.
    */
-  function deleteRecord(address player) internal {
-    bytes32[] memory _keyTuple = new bytes32[](1);
+  function deleteRecord(address player, ObjectType objectType) internal {
+    bytes32[] memory _keyTuple = new bytes32[](2);
     _keyTuple[0] = bytes32(uint256(uint160(player)));
+    _keyTuple[1] = bytes32(uint256(ObjectType.unwrap(objectType)));
 
     StoreSwitch.deleteRecord(_tableId, _keyTuple);
   }
@@ -157,9 +170,10 @@ library Contribution {
   /**
    * @notice Delete all data for given keys.
    */
-  function _deleteRecord(address player) internal {
-    bytes32[] memory _keyTuple = new bytes32[](1);
+  function _deleteRecord(address player, ObjectType objectType) internal {
+    bytes32[] memory _keyTuple = new bytes32[](2);
     _keyTuple[0] = bytes32(uint256(uint160(player)));
+    _keyTuple[1] = bytes32(uint256(ObjectType.unwrap(objectType)));
 
     StoreCore.deleteRecord(_tableId, _keyTuple, _fieldLayout);
   }
@@ -168,7 +182,7 @@ library Contribution {
    * @notice Tightly pack static (fixed length) data using this table's schema.
    * @return The static data, encoded into a sequence of bytes.
    */
-  function encodeStatic(int256 contribution) internal pure returns (bytes memory) {
+  function encodeStatic(uint256 contribution) internal pure returns (bytes memory) {
     return abi.encodePacked(contribution);
   }
 
@@ -178,7 +192,7 @@ library Contribution {
    * @return The lengths of the dynamic fields (packed into a single bytes32 value).
    * @return The dynamic (variable length) data, encoded into a sequence of bytes.
    */
-  function encode(int256 contribution) internal pure returns (bytes memory, EncodedLengths, bytes memory) {
+  function encode(uint256 contribution) internal pure returns (bytes memory, EncodedLengths, bytes memory) {
     bytes memory _staticData = encodeStatic(contribution);
 
     EncodedLengths _encodedLengths;
@@ -190,9 +204,10 @@ library Contribution {
   /**
    * @notice Encode keys as a bytes32 array using this table's field layout.
    */
-  function encodeKeyTuple(address player) internal pure returns (bytes32[] memory) {
-    bytes32[] memory _keyTuple = new bytes32[](1);
+  function encodeKeyTuple(address player, ObjectType objectType) internal pure returns (bytes32[] memory) {
+    bytes32[] memory _keyTuple = new bytes32[](2);
     _keyTuple[0] = bytes32(uint256(uint160(player)));
+    _keyTuple[1] = bytes32(uint256(ObjectType.unwrap(objectType)));
 
     return _keyTuple;
   }

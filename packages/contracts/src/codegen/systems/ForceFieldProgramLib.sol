@@ -38,16 +38,16 @@ struct RootCallWrapper {
 library ForceFieldProgramLib {
   error ForceFieldProgramLib_CallingFromRootSystem();
 
-  function validateProgram(ForceFieldProgramType self, ValidateProgramContext memory ctx) internal view {
-    return CallWrapper(self.toResourceId(), address(0)).validateProgram(ctx);
+  function validateProgram(ForceFieldProgramType self, ValidateProgramContext memory __auxArg0) internal view {
+    return CallWrapper(self.toResourceId(), address(0)).validateProgram(__auxArg0);
   }
 
   function onAttachProgram(ForceFieldProgramType self, AttachProgramContext memory ctx) internal {
     return CallWrapper(self.toResourceId(), address(0)).onAttachProgram(ctx);
   }
 
-  function onDetachProgram(ForceFieldProgramType self, DetachProgramContext memory ctx) internal {
-    return CallWrapper(self.toResourceId(), address(0)).onDetachProgram(ctx);
+  function onDetachProgram(ForceFieldProgramType self, DetachProgramContext memory __auxArg0) internal {
+    return CallWrapper(self.toResourceId(), address(0)).onDetachProgram(__auxArg0);
   }
 
   function onFuel(ForceFieldProgramType self, FuelContext memory ctx) internal {
@@ -62,31 +62,31 @@ library ForceFieldProgramLib {
     return CallWrapper(self.toResourceId(), address(0)).onAddFragment(ctx);
   }
 
-  function onRemoveFragment(ForceFieldProgramType self, RemoveFragmentContext memory ctx) internal view {
-    return CallWrapper(self.toResourceId(), address(0)).onRemoveFragment(ctx);
+  function onRemoveFragment(ForceFieldProgramType self, RemoveFragmentContext memory __auxArg0) internal view {
+    return CallWrapper(self.toResourceId(), address(0)).onRemoveFragment(__auxArg0);
   }
 
   function onBuild(ForceFieldProgramType self, BuildContext memory ctx) internal {
     return CallWrapper(self.toResourceId(), address(0)).onBuild(ctx);
   }
 
-  function onMine(ForceFieldProgramType self, MineContext memory ctx) internal {
+  function onMine(ForceFieldProgramType self, MineContext memory ctx) internal view {
     return CallWrapper(self.toResourceId(), address(0)).onMine(ctx);
   }
 
-  function _msgSender(ForceFieldProgramType self) internal view returns (address) {
+  function _msgSender(ForceFieldProgramType self) internal view returns (address __auxRet0) {
     return CallWrapper(self.toResourceId(), address(0))._msgSender();
   }
 
-  function _msgValue(ForceFieldProgramType self) internal view returns (uint256) {
+  function _msgValue(ForceFieldProgramType self) internal view returns (uint256 __auxRet0) {
     return CallWrapper(self.toResourceId(), address(0))._msgValue();
   }
 
-  function validateProgram(CallWrapper memory self, ValidateProgramContext memory ctx) internal view {
+  function validateProgram(CallWrapper memory self, ValidateProgramContext memory __auxArg0) internal view {
     // if the contract calling this function is a root system, it should use `callAsRoot`
     if (address(_world()) == address(this)) revert ForceFieldProgramLib_CallingFromRootSystem();
 
-    bytes memory systemCall = abi.encodeCall(_validateProgram_ValidateProgramContext.validateProgram, (ctx));
+    bytes memory systemCall = abi.encodeCall(_validateProgram_ValidateProgramContext.validateProgram, (__auxArg0));
     bytes memory worldCall = self.from == address(0)
       ? abi.encodeCall(IWorldCall.call, (self.systemId, systemCall))
       : abi.encodeCall(IWorldCall.callFrom, (self.from, self.systemId, systemCall));
@@ -105,11 +105,11 @@ library ForceFieldProgramLib {
       : _world().callFrom(self.from, self.systemId, systemCall);
   }
 
-  function onDetachProgram(CallWrapper memory self, DetachProgramContext memory ctx) internal {
+  function onDetachProgram(CallWrapper memory self, DetachProgramContext memory __auxArg0) internal {
     // if the contract calling this function is a root system, it should use `callAsRoot`
     if (address(_world()) == address(this)) revert ForceFieldProgramLib_CallingFromRootSystem();
 
-    bytes memory systemCall = abi.encodeCall(_onDetachProgram_DetachProgramContext.onDetachProgram, (ctx));
+    bytes memory systemCall = abi.encodeCall(_onDetachProgram_DetachProgramContext.onDetachProgram, (__auxArg0));
     self.from == address(0)
       ? _world().call(self.systemId, systemCall)
       : _world().callFrom(self.from, self.systemId, systemCall);
@@ -148,11 +148,11 @@ library ForceFieldProgramLib {
     abi.decode(returnData, (bytes));
   }
 
-  function onRemoveFragment(CallWrapper memory self, RemoveFragmentContext memory ctx) internal view {
+  function onRemoveFragment(CallWrapper memory self, RemoveFragmentContext memory __auxArg0) internal view {
     // if the contract calling this function is a root system, it should use `callAsRoot`
     if (address(_world()) == address(this)) revert ForceFieldProgramLib_CallingFromRootSystem();
 
-    bytes memory systemCall = abi.encodeCall(_onRemoveFragment_RemoveFragmentContext.onRemoveFragment, (ctx));
+    bytes memory systemCall = abi.encodeCall(_onRemoveFragment_RemoveFragmentContext.onRemoveFragment, (__auxArg0));
     bytes memory worldCall = self.from == address(0)
       ? abi.encodeCall(IWorldCall.call, (self.systemId, systemCall))
       : abi.encodeCall(IWorldCall.callFrom, (self.from, self.systemId, systemCall));
@@ -171,17 +171,20 @@ library ForceFieldProgramLib {
       : _world().callFrom(self.from, self.systemId, systemCall);
   }
 
-  function onMine(CallWrapper memory self, MineContext memory ctx) internal {
+  function onMine(CallWrapper memory self, MineContext memory ctx) internal view {
     // if the contract calling this function is a root system, it should use `callAsRoot`
     if (address(_world()) == address(this)) revert ForceFieldProgramLib_CallingFromRootSystem();
 
     bytes memory systemCall = abi.encodeCall(_onMine_MineContext.onMine, (ctx));
-    self.from == address(0)
-      ? _world().call(self.systemId, systemCall)
-      : _world().callFrom(self.from, self.systemId, systemCall);
+    bytes memory worldCall = self.from == address(0)
+      ? abi.encodeCall(IWorldCall.call, (self.systemId, systemCall))
+      : abi.encodeCall(IWorldCall.callFrom, (self.from, self.systemId, systemCall));
+    (bool success, bytes memory returnData) = address(_world()).staticcall(worldCall);
+    if (!success) revertWithBytes(returnData);
+    abi.decode(returnData, (bytes));
   }
 
-  function _msgSender(CallWrapper memory self) internal view returns (address) {
+  function _msgSender(CallWrapper memory self) internal view returns (address __auxRet0) {
     // if the contract calling this function is a root system, it should use `callAsRoot`
     if (address(_world()) == address(this)) revert ForceFieldProgramLib_CallingFromRootSystem();
 
@@ -193,10 +196,13 @@ library ForceFieldProgramLib {
     if (!success) revertWithBytes(returnData);
 
     bytes memory result = abi.decode(returnData, (bytes));
-    return abi.decode(result, (address));
+    // skip decoding an empty result, which can happen after expectRevert
+    if (result.length != 0) {
+      return abi.decode(result, (address));
+    }
   }
 
-  function _msgValue(CallWrapper memory self) internal view returns (uint256) {
+  function _msgValue(CallWrapper memory self) internal view returns (uint256 __auxRet0) {
     // if the contract calling this function is a root system, it should use `callAsRoot`
     if (address(_world()) == address(this)) revert ForceFieldProgramLib_CallingFromRootSystem();
 
@@ -208,11 +214,14 @@ library ForceFieldProgramLib {
     if (!success) revertWithBytes(returnData);
 
     bytes memory result = abi.decode(returnData, (bytes));
-    return abi.decode(result, (uint256));
+    // skip decoding an empty result, which can happen after expectRevert
+    if (result.length != 0) {
+      return abi.decode(result, (uint256));
+    }
   }
 
-  function validateProgram(RootCallWrapper memory self, ValidateProgramContext memory ctx) internal view {
-    bytes memory systemCall = abi.encodeCall(_validateProgram_ValidateProgramContext.validateProgram, (ctx));
+  function validateProgram(RootCallWrapper memory self, ValidateProgramContext memory __auxArg0) internal view {
+    bytes memory systemCall = abi.encodeCall(_validateProgram_ValidateProgramContext.validateProgram, (__auxArg0));
     SystemCall.staticcallOrRevert(self.from, self.systemId, systemCall);
   }
 
@@ -221,8 +230,8 @@ library ForceFieldProgramLib {
     SystemCall.callWithHooksOrRevert(self.from, self.systemId, systemCall, msg.value);
   }
 
-  function onDetachProgram(RootCallWrapper memory self, DetachProgramContext memory ctx) internal {
-    bytes memory systemCall = abi.encodeCall(_onDetachProgram_DetachProgramContext.onDetachProgram, (ctx));
+  function onDetachProgram(RootCallWrapper memory self, DetachProgramContext memory __auxArg0) internal {
+    bytes memory systemCall = abi.encodeCall(_onDetachProgram_DetachProgramContext.onDetachProgram, (__auxArg0));
     SystemCall.callWithHooksOrRevert(self.from, self.systemId, systemCall, msg.value);
   }
 
@@ -241,8 +250,8 @@ library ForceFieldProgramLib {
     SystemCall.staticcallOrRevert(self.from, self.systemId, systemCall);
   }
 
-  function onRemoveFragment(RootCallWrapper memory self, RemoveFragmentContext memory ctx) internal view {
-    bytes memory systemCall = abi.encodeCall(_onRemoveFragment_RemoveFragmentContext.onRemoveFragment, (ctx));
+  function onRemoveFragment(RootCallWrapper memory self, RemoveFragmentContext memory __auxArg0) internal view {
+    bytes memory systemCall = abi.encodeCall(_onRemoveFragment_RemoveFragmentContext.onRemoveFragment, (__auxArg0));
     SystemCall.staticcallOrRevert(self.from, self.systemId, systemCall);
   }
 
@@ -251,23 +260,29 @@ library ForceFieldProgramLib {
     SystemCall.callWithHooksOrRevert(self.from, self.systemId, systemCall, msg.value);
   }
 
-  function onMine(RootCallWrapper memory self, MineContext memory ctx) internal {
+  function onMine(RootCallWrapper memory self, MineContext memory ctx) internal view {
     bytes memory systemCall = abi.encodeCall(_onMine_MineContext.onMine, (ctx));
-    SystemCall.callWithHooksOrRevert(self.from, self.systemId, systemCall, msg.value);
+    SystemCall.staticcallOrRevert(self.from, self.systemId, systemCall);
   }
 
-  function _msgSender(RootCallWrapper memory self) internal view returns (address) {
+  function _msgSender(RootCallWrapper memory self) internal view returns (address __auxRet0) {
     bytes memory systemCall = abi.encodeCall(__msgSender._msgSender, ());
 
     bytes memory result = SystemCall.staticcallOrRevert(self.from, self.systemId, systemCall);
-    return abi.decode(result, (address));
+    // skip decoding an empty result, which can happen after expectRevert
+    if (result.length != 0) {
+      return abi.decode(result, (address));
+    }
   }
 
-  function _msgValue(RootCallWrapper memory self) internal view returns (uint256) {
+  function _msgValue(RootCallWrapper memory self) internal view returns (uint256 __auxRet0) {
     bytes memory systemCall = abi.encodeCall(__msgValue._msgValue, ());
 
     bytes memory result = SystemCall.staticcallOrRevert(self.from, self.systemId, systemCall);
-    return abi.decode(result, (uint256));
+    // skip decoding an empty result, which can happen after expectRevert
+    if (result.length != 0) {
+      return abi.decode(result, (uint256));
+    }
   }
 
   function callFrom(ForceFieldProgramType self, address from) internal pure returns (CallWrapper memory) {
@@ -309,7 +324,7 @@ library ForceFieldProgramLib {
  */
 
 interface _validateProgram_ValidateProgramContext {
-  function validateProgram(ValidateProgramContext memory ctx) external;
+  function validateProgram(ValidateProgramContext memory __auxArg0) external;
 }
 
 interface _onAttachProgram_AttachProgramContext {
@@ -317,7 +332,7 @@ interface _onAttachProgram_AttachProgramContext {
 }
 
 interface _onDetachProgram_DetachProgramContext {
-  function onDetachProgram(DetachProgramContext memory ctx) external;
+  function onDetachProgram(DetachProgramContext memory __auxArg0) external;
 }
 
 interface _onFuel_FuelContext {
@@ -333,7 +348,7 @@ interface _onAddFragment_AddFragmentContext {
 }
 
 interface _onRemoveFragment_RemoveFragmentContext {
-  function onRemoveFragment(RemoveFragmentContext memory ctx) external;
+  function onRemoveFragment(RemoveFragmentContext memory __auxArg0) external;
 }
 
 interface _onBuild_BuildContext {
