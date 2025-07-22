@@ -146,7 +146,6 @@ contract ForceFieldProgram is
     // Additional protection for smart entities
     require(!ctx.objectType.isSmartEntity(), "Cannot mine smart entities");
 
-    // Check blueprint permissions for non-council members
     (ObjectType blueprintType,) = BlueprintLib.getBlock(ctx.coord);
     require(blueprintType != ObjectTypes.Null, "Not allowed to mine here");
 
