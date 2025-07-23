@@ -70,5 +70,13 @@ export default defineWorld({
       },
       key: ["x", "y", "z"],
     },
+    // SpawnTile
+    SpawnEnergyConsumed: {
+      schema: {
+        player: "address",
+        energy: "uint128",
+      },
+      key: ["player"],
+    },
   },
 });

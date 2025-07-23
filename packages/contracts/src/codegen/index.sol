@@ -8,3 +8,4 @@ import { Contribution } from "./tables/Contribution.sol";
 import { ForceFieldDamage } from "./tables/ForceFieldDamage.sol";
 import { ForceField } from "./tables/ForceField.sol";
 import { BlueprintChunk } from "./tables/BlueprintChunk.sol";
+import { SpawnEnergyConsumed } from "./tables/SpawnEnergyConsumed.sol";

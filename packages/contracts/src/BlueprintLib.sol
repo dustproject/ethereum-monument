@@ -141,7 +141,12 @@ library BlueprintLib {
     }
 
     uint256 paletteOffset = paletteIndex * 3;
-    blockType = ObjectType.wrap(uint16(uint8(palette[paletteOffset]) << 8 | uint8(palette[paletteOffset + 1])));
+
+    uint8 highByte = uint8(palette[paletteOffset]);
+    uint8 lowByte = uint8(palette[paletteOffset + 1]);
+    uint16 objectTypeValue = (uint16(highByte) << 8) | uint16(lowByte);
+
+    blockType = ObjectType.wrap(objectTypeValue);
     orientation = Orientation.wrap(uint8(palette[paletteOffset + 2]));
   }
 
