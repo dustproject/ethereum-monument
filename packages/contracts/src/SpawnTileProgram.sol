@@ -26,8 +26,7 @@ import { getForceField } from "./utils/getForceField.sol";
 uint128 constant MIN_ENERGY_THRESHOLD_TO_SPAWN = 200_000_000_000_000_000_000;
 
 contract SpawnTileProgram is IAttachProgram, IDetachProgram, ISpawn, System, WorldConsumer(IWorld(address(0))) {
-  function onAttachProgram(AttachProgramContext calldata ctx) public override onlyWorld {
-    // TODO: who can attach?
+  function onAttachProgram(AttachProgramContext calldata ctx) public view override onlyWorld {
     require(ctx.target.getObjectType() == ObjectTypes.SpawnTile, "Target must be a spawn tile");
     address admin = Admin.get();
     require(admin == _msgSender(), "Only admin can attach this program");

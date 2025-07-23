@@ -56,8 +56,7 @@ contract ForceFieldProgram is
   System,
   WorldConsumer(IWorld(address(0)))
 {
-  function validateProgram(ValidateProgramContext calldata) external pure {
-    revert("Program not allowed by forcefield");
+  function validateProgram(ValidateProgramContext calldata ctx) external pure {
   }
 
   function onAttachProgram(AttachProgramContext calldata ctx) public override onlyWorld {
@@ -122,17 +121,12 @@ contract ForceFieldProgram is
     if (blueprintType == ctx.objectType) {
       uint256 current = Contribution.get(player, blueprintType);
       Contribution.set(player, blueprintType, current + 1);
-    } else if (blueprintType == ObjectTypes.Air) {
-      require(ctx.objectType == ObjectTypes.Dirt, "Only dirt scaffold can be built here");
-      // TODO
     } else {
-      revert("Object does not match blueprint");
+      require(ctx.objectType == ObjectTypes.Dirt, "Only dirt scaffold can be built here");
     }
   }
 
   function onMine(MineContext calldata ctx) external view onlyWorld {
-    // EntityId mined = EntityTypeLib.encodeBlock(ctx.coord).baseEntityId();
-
     // Additional protection for smart entities
     require(!ctx.objectType.isSmartEntity(), "Cannot mine smart entities");
 
