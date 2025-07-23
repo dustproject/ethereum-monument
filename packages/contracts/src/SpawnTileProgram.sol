@@ -30,12 +30,13 @@ contract SpawnTileProgram is IAttachProgram, IDetachProgram, ISpawn, System, Wor
     // TODO: who can attach?
     require(ctx.target.getObjectType() == ObjectTypes.SpawnTile, "Target must be a spawn tile");
     address admin = Admin.get();
-    require(admin == _msgSender(), "Admin not set");
+    require(admin == _msgSender(), "Only admin can attach this program");
   }
 
   function onDetachProgram(DetachProgramContext calldata) public override onlyWorld {
+    // TODO: check if safe call
     address admin = Admin.get();
-    require(admin == _msgSender(), "Admin not set");
+    require(admin == _msgSender(), "Only admin can detach this program");
   }
 
   function onSpawn(SpawnContext calldata ctx) external onlyWorld {
