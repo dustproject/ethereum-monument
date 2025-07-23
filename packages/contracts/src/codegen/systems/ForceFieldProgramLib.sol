@@ -15,9 +15,9 @@ import { StoreSwitch } from "@latticexyz/store/src/StoreSwitch.sol";
 
 type ForceFieldProgramType is bytes32;
 
-// equivalent to WorldResourceIdLib.encode({ typeId: RESOURCE_SYSTEM, namespace: "eth-monument", name: "ForceFieldProgra" }))
+// equivalent to WorldResourceIdLib.encode({ typeId: RESOURCE_SYSTEM, namespace: "eth_monument", name: "ForceFieldProgra" }))
 ForceFieldProgramType constant forceFieldProgram = ForceFieldProgramType.wrap(
-  0x73796574682d6d6f6e756d656e740000466f7263654669656c6450726f677261
+  0x73796574685f6d6f6e756d656e740000466f7263654669656c6450726f677261
 );
 
 struct CallWrapper {
@@ -38,16 +38,16 @@ struct RootCallWrapper {
 library ForceFieldProgramLib {
   error ForceFieldProgramLib_CallingFromRootSystem();
 
-  function validateProgram(ForceFieldProgramType self, ValidateProgramContext memory __auxArg0) internal view {
-    return CallWrapper(self.toResourceId(), address(0)).validateProgram(__auxArg0);
+  function validateProgram(ForceFieldProgramType self, ValidateProgramContext memory ctx) internal view {
+    return CallWrapper(self.toResourceId(), address(0)).validateProgram(ctx);
   }
 
   function onAttachProgram(ForceFieldProgramType self, AttachProgramContext memory ctx) internal {
     return CallWrapper(self.toResourceId(), address(0)).onAttachProgram(ctx);
   }
 
-  function onDetachProgram(ForceFieldProgramType self, DetachProgramContext memory __auxArg0) internal {
-    return CallWrapper(self.toResourceId(), address(0)).onDetachProgram(__auxArg0);
+  function onDetachProgram(ForceFieldProgramType self, DetachProgramContext memory ctx) internal {
+    return CallWrapper(self.toResourceId(), address(0)).onDetachProgram(ctx);
   }
 
   function onFuel(ForceFieldProgramType self, FuelContext memory ctx) internal {
@@ -82,11 +82,11 @@ library ForceFieldProgramLib {
     return CallWrapper(self.toResourceId(), address(0))._msgValue();
   }
 
-  function validateProgram(CallWrapper memory self, ValidateProgramContext memory __auxArg0) internal view {
+  function validateProgram(CallWrapper memory self, ValidateProgramContext memory ctx) internal view {
     // if the contract calling this function is a root system, it should use `callAsRoot`
     if (address(_world()) == address(this)) revert ForceFieldProgramLib_CallingFromRootSystem();
 
-    bytes memory systemCall = abi.encodeCall(_validateProgram_ValidateProgramContext.validateProgram, (__auxArg0));
+    bytes memory systemCall = abi.encodeCall(_validateProgram_ValidateProgramContext.validateProgram, (ctx));
     bytes memory worldCall = self.from == address(0)
       ? abi.encodeCall(IWorldCall.call, (self.systemId, systemCall))
       : abi.encodeCall(IWorldCall.callFrom, (self.from, self.systemId, systemCall));
@@ -105,11 +105,11 @@ library ForceFieldProgramLib {
       : _world().callFrom(self.from, self.systemId, systemCall);
   }
 
-  function onDetachProgram(CallWrapper memory self, DetachProgramContext memory __auxArg0) internal {
+  function onDetachProgram(CallWrapper memory self, DetachProgramContext memory ctx) internal {
     // if the contract calling this function is a root system, it should use `callAsRoot`
     if (address(_world()) == address(this)) revert ForceFieldProgramLib_CallingFromRootSystem();
 
-    bytes memory systemCall = abi.encodeCall(_onDetachProgram_DetachProgramContext.onDetachProgram, (__auxArg0));
+    bytes memory systemCall = abi.encodeCall(_onDetachProgram_DetachProgramContext.onDetachProgram, (ctx));
     self.from == address(0)
       ? _world().call(self.systemId, systemCall)
       : _world().callFrom(self.from, self.systemId, systemCall);
@@ -220,8 +220,8 @@ library ForceFieldProgramLib {
     }
   }
 
-  function validateProgram(RootCallWrapper memory self, ValidateProgramContext memory __auxArg0) internal view {
-    bytes memory systemCall = abi.encodeCall(_validateProgram_ValidateProgramContext.validateProgram, (__auxArg0));
+  function validateProgram(RootCallWrapper memory self, ValidateProgramContext memory ctx) internal view {
+    bytes memory systemCall = abi.encodeCall(_validateProgram_ValidateProgramContext.validateProgram, (ctx));
     SystemCall.staticcallOrRevert(self.from, self.systemId, systemCall);
   }
 
@@ -230,8 +230,8 @@ library ForceFieldProgramLib {
     SystemCall.callWithHooksOrRevert(self.from, self.systemId, systemCall, msg.value);
   }
 
-  function onDetachProgram(RootCallWrapper memory self, DetachProgramContext memory __auxArg0) internal {
-    bytes memory systemCall = abi.encodeCall(_onDetachProgram_DetachProgramContext.onDetachProgram, (__auxArg0));
+  function onDetachProgram(RootCallWrapper memory self, DetachProgramContext memory ctx) internal {
+    bytes memory systemCall = abi.encodeCall(_onDetachProgram_DetachProgramContext.onDetachProgram, (ctx));
     SystemCall.callWithHooksOrRevert(self.from, self.systemId, systemCall, msg.value);
   }
 
@@ -324,7 +324,7 @@ library ForceFieldProgramLib {
  */
 
 interface _validateProgram_ValidateProgramContext {
-  function validateProgram(ValidateProgramContext memory __auxArg0) external;
+  function validateProgram(ValidateProgramContext memory ctx) external;
 }
 
 interface _onAttachProgram_AttachProgramContext {
@@ -332,7 +332,7 @@ interface _onAttachProgram_AttachProgramContext {
 }
 
 interface _onDetachProgram_DetachProgramContext {
-  function onDetachProgram(DetachProgramContext memory __auxArg0) external;
+  function onDetachProgram(DetachProgramContext memory ctx) external;
 }
 
 interface _onFuel_FuelContext {

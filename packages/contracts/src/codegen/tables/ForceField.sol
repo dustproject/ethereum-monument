@@ -20,8 +20,8 @@ import { ResourceId } from "@latticexyz/store/src/ResourceId.sol";
 import { EntityId } from "@dust/world/src/types/EntityId.sol";
 
 library ForceField {
-  // Hex below is the result of `WorldResourceIdLib.encode({ namespace: "eth-monument", name: "ForceField", typeId: RESOURCE_TABLE });`
-  ResourceId constant _tableId = ResourceId.wrap(0x74626574682d6d6f6e756d656e740000466f7263654669656c64000000000000);
+  // Hex below is the result of `WorldResourceIdLib.encode({ namespace: "eth_monument", name: "ForceField", typeId: RESOURCE_TABLE });`
+  ResourceId constant _tableId = ResourceId.wrap(0x74626574685f6d6f6e756d656e740000466f7263654669656c64000000000000);
 
   FieldLayout constant _fieldLayout =
     FieldLayout.wrap(0x0020010020000000000000000000000000000000000000000000000000000000);

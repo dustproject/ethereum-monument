@@ -17,8 +17,8 @@ import { EncodedLengths, EncodedLengthsLib } from "@latticexyz/store/src/Encoded
 import { ResourceId } from "@latticexyz/store/src/ResourceId.sol";
 
 library ForceFieldDamage {
-  // Hex below is the result of `WorldResourceIdLib.encode({ namespace: "eth-monument", name: "ForceFieldDamage", typeId: RESOURCE_TABLE });`
-  ResourceId constant _tableId = ResourceId.wrap(0x74626574682d6d6f6e756d656e740000466f7263654669656c6444616d616765);
+  // Hex below is the result of `WorldResourceIdLib.encode({ namespace: "eth_monument", name: "ForceFieldDamage", typeId: RESOURCE_TABLE });`
+  ResourceId constant _tableId = ResourceId.wrap(0x74626574685f6d6f6e756d656e740000466f7263654669656c6444616d616765);
 
   FieldLayout constant _fieldLayout =
     FieldLayout.wrap(0x0020010020000000000000000000000000000000000000000000000000000000);

@@ -17,8 +17,8 @@ import { EncodedLengths, EncodedLengthsLib } from "@latticexyz/store/src/Encoded
 import { ResourceId } from "@latticexyz/store/src/ResourceId.sol";
 
 library BlueprintChunk {
-  // Hex below is the result of `WorldResourceIdLib.encode({ namespace: "eth-monument", name: "BlueprintChunk", typeId: RESOURCE_TABLE });`
-  ResourceId constant _tableId = ResourceId.wrap(0x74626574682d6d6f6e756d656e740000426c75657072696e744368756e6b0000);
+  // Hex below is the result of `WorldResourceIdLib.encode({ namespace: "eth_monument", name: "BlueprintChunk", typeId: RESOURCE_TABLE });`
+  ResourceId constant _tableId = ResourceId.wrap(0x74626574685f6d6f6e756d656e740000426c75657072696e744368756e6b0000);
 
   FieldLayout constant _fieldLayout =
     FieldLayout.wrap(0x0014010014000000000000000000000000000000000000000000000000000000);

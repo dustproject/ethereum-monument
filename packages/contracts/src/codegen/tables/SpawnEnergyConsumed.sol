@@ -17,8 +17,8 @@ import { EncodedLengths, EncodedLengthsLib } from "@latticexyz/store/src/Encoded
 import { ResourceId } from "@latticexyz/store/src/ResourceId.sol";
 
 library SpawnEnergyConsumed {
-  // Hex below is the result of `WorldResourceIdLib.encode({ namespace: "eth-monument", name: "SpawnEnergyConsu", typeId: RESOURCE_TABLE });`
-  ResourceId constant _tableId = ResourceId.wrap(0x74626574682d6d6f6e756d656e740000537061776e456e65726779436f6e7375);
+  // Hex below is the result of `WorldResourceIdLib.encode({ namespace: "eth_monument", name: "SpawnEnergyConsu", typeId: RESOURCE_TABLE });`
+  ResourceId constant _tableId = ResourceId.wrap(0x74626574685f6d6f6e756d656e740000537061776e456e65726779436f6e7375);
 
   FieldLayout constant _fieldLayout =
     FieldLayout.wrap(0x0010010010000000000000000000000000000000000000000000000000000000);

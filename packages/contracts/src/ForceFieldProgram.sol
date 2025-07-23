@@ -41,6 +41,8 @@ import { ForceFieldDamage } from "./codegen/tables/ForceFieldDamage.sol";
 
 import { ForceField } from "./codegen/tables/ForceField.sol";
 
+import { spawnTileProgram } from "./codegen/systems/SpawnTileProgramLib.sol";
+
 import { BlueprintLib } from "./BlueprintLib.sol";
 
 contract ForceFieldProgram is
@@ -56,22 +58,24 @@ contract ForceFieldProgram is
   System,
   WorldConsumer(IWorld(address(0)))
 {
-  function validateProgram(ValidateProgramContext calldata ctx) external pure {
+  function validateProgram(ValidateProgramContext calldata ctx) external view {
+    address admin = Admin.get();
+    require(admin == ctx.caller.getPlayerAddress(), "Only admin can attach this program");
   }
 
   function onAttachProgram(AttachProgramContext calldata ctx) public override onlyWorld {
-    // TODO: who can attach?
+    address admin = Admin.get();
+    require(admin == ctx.caller.getPlayerAddress(), "Only admin can attach this program");
+
     require(ctx.target.getObjectType() == ObjectTypes.ForceField, "Target must be a force field");
     require(ForceField.get().unwrap() == 0, "Force field already exists");
     ForceField.set(ctx.target);
-
-    address admin = Admin.get();
-    require(admin != address(0), "Admin not set");
-    defaultProgramSystem.setAccessGroup(ctx.target, admin);
   }
 
-  function onDetachProgram(DetachProgramContext calldata) public override onlyWorld {
-    // TODO: who can detach?
+  function onDetachProgram(DetachProgramContext calldata ctx ) public override onlyWorld {
+    // TODO: check if safe call
+    address admin = Admin.get();
+    require(admin == ctx.caller.getPlayerAddress(), "Only admin can detach this program");
     ForceField.deleteRecord();
   }
 

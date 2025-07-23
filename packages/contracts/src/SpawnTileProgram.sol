@@ -27,27 +27,28 @@ uint128 constant MIN_ENERGY_THRESHOLD_TO_SPAWN = 200_000_000_000_000_000_000;
 
 contract SpawnTileProgram is IAttachProgram, IDetachProgram, ISpawn, System, WorldConsumer(IWorld(address(0))) {
   function onAttachProgram(AttachProgramContext calldata ctx) public view override onlyWorld {
-    require(ctx.target.getObjectType() == ObjectTypes.SpawnTile, "Target must be a spawn tile");
     address admin = Admin.get();
-    require(admin == _msgSender(), "Only admin can attach this program");
+    require(admin == ctx.caller.getPlayerAddress(), "Only admin can attach this program");
+
+    require(ctx.target.getObjectType() == ObjectTypes.SpawnTile, "Target must be a spawn tile");
   }
 
-  function onDetachProgram(DetachProgramContext calldata) public override onlyWorld {
+  function onDetachProgram(DetachProgramContext calldata ctx) public override onlyWorld {
     // TODO: check if safe call
     address admin = Admin.get();
-    require(admin == _msgSender(), "Only admin can detach this program");
+    require(admin == ctx.caller.getPlayerAddress(), "Only admin can detach this program");
   }
 
   function onSpawn(SpawnContext calldata ctx) external onlyWorld {
     address player = ctx.caller.getPlayerAddress();
     uint256 forceFieldDamage = ForceFieldDamage.get(player);
-    require(forceFieldDamage == 0, "You've been banned due to bad behavior");
+    require(forceFieldDamage == 0, "You are not welcome here");
 
     uint128 energyConsumed = SpawnEnergyConsumed.get(player);
     uint256 batteriesContributed = Contribution.get(player, ObjectTypes.Battery);
 
     uint256 availableEnergy = batteriesContributed * ObjectPhysics.getEnergy(ObjectTypes.Battery) - energyConsumed;
-    require(ctx.spawnEnergy <= availableEnergy, "Spawn energy exceeds limit");
+    require(ctx.spawnEnergy <= availableEnergy, "Not enough energy contributed");
 
     SpawnEnergyConsumed.set(player, energyConsumed + ctx.spawnEnergy);
 

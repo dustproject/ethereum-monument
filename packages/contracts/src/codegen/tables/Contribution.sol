@@ -20,8 +20,8 @@ import { ResourceId } from "@latticexyz/store/src/ResourceId.sol";
 import { ObjectType } from "@dust/world/src/types/ObjectType.sol";
 
 library Contribution {
-  // Hex below is the result of `WorldResourceIdLib.encode({ namespace: "eth-monument", name: "Contribution", typeId: RESOURCE_TABLE });`
-  ResourceId constant _tableId = ResourceId.wrap(0x74626574682d6d6f6e756d656e740000436f6e747269627574696f6e00000000);
+  // Hex below is the result of `WorldResourceIdLib.encode({ namespace: "eth_monument", name: "Contribution", typeId: RESOURCE_TABLE });`
+  ResourceId constant _tableId = ResourceId.wrap(0x74626574685f6d6f6e756d656e740000436f6e747269627574696f6e00000000);
 
   FieldLayout constant _fieldLayout =
     FieldLayout.wrap(0x0020010020000000000000000000000000000000000000000000000000000000);

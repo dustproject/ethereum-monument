@@ -22,9 +22,13 @@ export default defineWorld({
       type: "bytes32",
     },
   },
-  namespace: "eth-monument",
+  namespace: "eth_monument",
   systems: {
     ForceFieldProgram: {
+      openAccess: false,
+      deploy: { registerWorldFunctions: false },
+    },
+    SpawnTileProgram: {
       openAccess: false,
       deploy: { registerWorldFunctions: false },
     },
