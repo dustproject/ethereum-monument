@@ -12,6 +12,9 @@
   "dependencies": {
     "@dust/world": "https://pkg.pr.new/dustproject/dust/@dust/world@b324704",
     "@latticexyz/common": "2.2.23-e76d72504e7ee51c76fa380bdc4a56f4815b7b59",
+    "@latticexyz/world": "2.2.23-e76d72504e7ee51c76fa380bdc4a56f4815b7b59",
+    "@latticexyz/stash": "2.2.23-e76d72504e7ee51c76fa380bdc4a56f4815b7b59",
+    "@latticexyz/store-sync": "2.2.23-e76d72504e7ee51c76fa380bdc4a56f4815b7b59",
     "dustkit": "https://pkg.pr.new/dustproject/dust/dustkit@27f724c",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
