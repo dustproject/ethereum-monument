@@ -20,22 +20,16 @@ export const stashConfig = {
 export const filters = [
   {
     tableId: tables.Energy.tableId,
-    // key0: playerEntityId,
+    key0: playerEntityId,
   },
 ] satisfies SyncFilter[];
 
 export const stash = createStash(stashConfig);
 
-const result = await syncToStash({
+await syncToStash({
   address: worldAddress,
   stash,
   filters,
   internal_clientOptions: { chain: redstone },
   indexerUrl: redstone.indexerUrl,
 });
-
-result.storedBlockLogs$.subscribe((x) => {
-  console.log("got block", x.blockNumber);
-});
-
-(window as any).stash = stash;
