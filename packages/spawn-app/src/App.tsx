@@ -3,7 +3,7 @@ import { spawn } from "./spawn";
 
 export default function App() {
   const [error, setError] = useState<string | undefined>(undefined);
-  const [processing, setProcessing] = useState(true);
+  const [processing, setProcessing] = useState(false);
 
   const handleSpawn = async () => {
     setError(undefined);
