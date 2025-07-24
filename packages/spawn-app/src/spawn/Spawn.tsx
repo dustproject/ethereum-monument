@@ -1,22 +1,14 @@
 import { useState } from "react";
-import { spawn } from "./spawn";
-import { useRecord } from "@latticexyz/stash/react";
-import { stash, tables } from "../mud/stash";
-import { initialProgress } from "@latticexyz/store-sync/internal";
+import { spawnPlayer } from "./spawnPlayer";
 
-export function SpawnPage() {
+export function Spawn() {
   const [error, setError] = useState<string | undefined>(undefined);
   const [processing, setProcessing] = useState(false);
-  const energy = useRecord({
-    stash,
-    table: tables.Energy,
-    key: {},
-  });
 
   const handleSpawn = async () => {
     setError(undefined);
     setProcessing(true);
-    const { error } = await spawn();
+    const { error } = await spawnPlayer();
     setError(error);
     setProcessing(false);
   };

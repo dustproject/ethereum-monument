@@ -1,12 +1,12 @@
 import { decodePosition, packVec3 } from "@dust/world/internal";
 import IWorldAbi from "@dust/world/out/IWorld.sol/IWorld.abi";
 import { resourceToHex } from "@latticexyz/common";
-import { dustClient } from "./dustClient";
-import { spawnEnergy, spawnTileEntityId } from "./common";
+import { dustClient } from "../dustClient";
+import { spawnEnergy, spawnTileEntityId } from "../common";
 import { getSpawnCoord } from "./getSpawnCoord";
-import { decodeError } from "./decodeError";
+import { decodeError } from "../decodeError";
 
-export async function spawn(): Promise<{ error?: string }> {
+export async function spawnPlayer(): Promise<{ error?: string }> {
   const spawnTileCoord = decodePosition(spawnTileEntityId);
   const spawnCoord = packVec3(getSpawnCoord(spawnTileCoord));
 

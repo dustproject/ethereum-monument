@@ -1,1 +1,1 @@
-export { SpawnPage } from "./SpawnPage";
+export { Spawn } from "./Spawn";

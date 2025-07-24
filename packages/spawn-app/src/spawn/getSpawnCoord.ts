@@ -1,4 +1,4 @@
-import { spawnRadius } from "./common";
+import { spawnRadius } from "../common";
 
 export function getSpawnCoord(
   spawnTileCoord: readonly [number, number, number]
