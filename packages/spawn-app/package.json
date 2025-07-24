@@ -10,9 +10,12 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@dust/world": "https://pkg.pr.new/dustproject/dust/@dust/world@b324704",
+    "@latticexyz/common": "2.2.23-e76d72504e7ee51c76fa380bdc4a56f4815b7b59",
     "dustkit": "https://pkg.pr.new/dustproject/dust/dustkit@27f724c",
     "react": "^19.1.0",
-    "react-dom": "^19.1.0"
+    "react-dom": "^19.1.0",
+    "viem": "^2.33.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.30.1",
