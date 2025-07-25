@@ -20,7 +20,6 @@ fs_permissions = [{ access = "read", path = "./"}]
 remappings = [
   "forge-std/=node_modules/forge-std/src/",
   "@latticexyz/=node_modules/@latticexyz/",
-  "@openzeppelin/=node_modules/@openzeppelin/contracts/",
   "@dust/=node_modules/@dust/",
   "solady/=node_modules/solady/src/",
 ]

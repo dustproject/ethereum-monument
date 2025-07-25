@@ -43,7 +43,7 @@ export default defineWorld({
       },
       key: [],
     },
-    Contribution: {
+    BlueprintContribution: {
       schema: {
         player: "address",
         objectType: "ObjectType",
@@ -55,6 +55,13 @@ export default defineWorld({
       schema: {
         player: "address",
         damage: "uint256",
+      },
+      key: ["player"],
+    },
+    EnergyContribution: {
+      schema: {
+        player: "address",
+        energy: "uint256",
       },
       key: ["player"],
     },
