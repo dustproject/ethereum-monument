@@ -38,19 +38,19 @@ struct RootCallWrapper {
 library AdminSystemLib {
   error AdminSystemLib_CallingFromRootSystem();
 
-  function setAdmin(AdminSystemType self, address admin) internal {
-    return CallWrapper(self.toResourceId(), address(0)).setAdmin(admin);
+  function setAdmin(AdminSystemType self, address admin, bool isAdmin) internal {
+    return CallWrapper(self.toResourceId(), address(0)).setAdmin(admin, isAdmin);
   }
 
   function setBlueprintChunks(AdminSystemType self, BlueprintChunkData[] memory chunks) internal {
     return CallWrapper(self.toResourceId(), address(0)).setBlueprintChunks(chunks);
   }
 
-  function setAdmin(CallWrapper memory self, address admin) internal {
+  function setAdmin(CallWrapper memory self, address admin, bool isAdmin) internal {
     // if the contract calling this function is a root system, it should use `callAsRoot`
     if (address(_world()) == address(this)) revert AdminSystemLib_CallingFromRootSystem();
 
-    bytes memory systemCall = abi.encodeCall(_setAdmin_address.setAdmin, (admin));
+    bytes memory systemCall = abi.encodeCall(_setAdmin_address_bool.setAdmin, (admin, isAdmin));
     self.from == address(0)
       ? _world().call(self.systemId, systemCall)
       : _world().callFrom(self.from, self.systemId, systemCall);
@@ -66,8 +66,8 @@ library AdminSystemLib {
       : _world().callFrom(self.from, self.systemId, systemCall);
   }
 
-  function setAdmin(RootCallWrapper memory self, address admin) internal {
-    bytes memory systemCall = abi.encodeCall(_setAdmin_address.setAdmin, (admin));
+  function setAdmin(RootCallWrapper memory self, address admin, bool isAdmin) internal {
+    bytes memory systemCall = abi.encodeCall(_setAdmin_address_bool.setAdmin, (admin, isAdmin));
     SystemCall.callWithHooksOrRevert(self.from, self.systemId, systemCall, msg.value);
   }
 
@@ -114,8 +114,8 @@ library AdminSystemLib {
  * Each interface is uniquely named based on the function name and parameters to prevent collisions.
  */
 
-interface _setAdmin_address {
-  function setAdmin(address admin) external;
+interface _setAdmin_address_bool {
+  function setAdmin(address admin, bool isAdmin) external;
 }
 
 interface _setBlueprintChunks_BlueprintChunkDataArray {

@@ -9,4 +9,5 @@ import { ForceFieldDamage } from "./tables/ForceFieldDamage.sol";
 import { EnergyContribution } from "./tables/EnergyContribution.sol";
 import { ForceField } from "./tables/ForceField.sol";
 import { BlueprintChunk } from "./tables/BlueprintChunk.sol";
+import { SpawnCount } from "./tables/SpawnCount.sol";
 import { SpawnEnergyConsumed } from "./tables/SpawnEnergyConsumed.sol";
