@@ -11,9 +11,7 @@ import { console } from "forge-std/console.sol";
 
 import { forceFieldProgram } from "../src/codegen/systems/ForceFieldProgramLib.sol";
 
-
-address constant ADMIN =0xE0ae70caBb529336e25FA7a1f036b77ad0089d2a;
-
+address constant ADMIN = 0xE0ae70caBb529336e25FA7a1f036b77ad0089d2a;
 
 contract PostDeploy is Script {
   using WorldResourceIdInstance for ResourceId;
