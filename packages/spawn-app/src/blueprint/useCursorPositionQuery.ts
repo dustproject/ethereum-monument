@@ -1,5 +1,5 @@
 import { skipToken, useQuery } from "@tanstack/react-query";
-import { useDustClient } from "./useDustClient";
+import { dustClient } from "../dustClient";
 
 type Cursor = {
   x: number;
@@ -8,7 +8,6 @@ type Cursor = {
 };
 
 export function useCursorPositionQuery() {
-  const { data: dustClient } = useDustClient();
   return useQuery<Cursor | null>({
     queryKey: ["cursor", "position"],
     queryFn: !dustClient

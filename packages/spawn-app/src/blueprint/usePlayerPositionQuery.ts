@@ -1,5 +1,5 @@
 import { skipToken, useQuery } from "@tanstack/react-query";
-import { useDustClient } from "./useDustClient";
+import { dustClient } from "../dustClient";
 
 type PlayerPosition = {
   x: number;
@@ -8,8 +8,6 @@ type PlayerPosition = {
 };
 
 export function usePlayerPositionQuery() {
-  const { data: dustClient } = useDustClient();
-
   return useQuery<PlayerPosition | null>({
     queryKey: ["playerPosition"],
     queryFn: !dustClient

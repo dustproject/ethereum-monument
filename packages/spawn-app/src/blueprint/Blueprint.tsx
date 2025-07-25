@@ -1,30 +1,14 @@
-import {
-  type ObjectDefinition,
-  categories,
-  objects,
-} from "@dust/world/internal";
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { useDustClient } from "./useDustClient";
+import { useCallback, useEffect, useMemo } from "react";
 import { useCursorPositionQuery } from "./useCursorPositionQuery";
 import { usePlayerPositionQuery } from "./usePlayerPositionQuery";
-// import { useAppStore } from "./useAppStore"; // TODO: add back
 import { useBlueprintQuery } from "./useBlueprintQuery";
-import { useSelectedObjectTypeQuery } from "./useSelectedObjectTypeQuery";
 import { usePreviousNonNull } from "./usePreviousNonNull";
-
-const objectsByObjectType = Object.fromEntries(
-  Object.entries(objects).map(([, value]) => [value.id, value])
-) as Record<number, ObjectDefinition>;
+import { dustClient } from "../dustClient";
 
 export function Blueprint() {
-  // const { autoSwitch, setAutoSwitch } = useAppStore();
-  const autoSwitch = false;
-  const [activeObjectTypeId, setActiveObjectTypeId] = useState(0);
-  const { data: dustClient } = useDustClient();
   const { data: cursor } = useCursorPositionQuery();
   const prevCursor = usePreviousNonNull(cursor);
   const { data: playerPosition } = usePlayerPositionQuery();
-  const { data: selectedObjectType } = useSelectedObjectTypeQuery(autoSwitch);
 
   const {
     x: chunkX,
@@ -55,49 +39,17 @@ export function Blueprint() {
   const setBlueprint = useCallback(async () => {
     if (!dustClient || !blueprintData) return;
 
-    const filteredBlueprintData =
-      activeObjectTypeId > 1
-        ? blueprintData.filter(({ objectTypeId }) => {
-            return activeObjectTypeId === objectTypeId;
-          })
-        : blueprintData;
-
     await dustClient.provider.request({
       method: "setBlueprint",
       params: {
-        blocks: filteredBlueprintData,
-        options:
-          activeObjectTypeId === 1
-            ? {
-                showBlocksToBuild: false,
-                showBlocksToMine: true,
-              }
-            : undefined,
+        blocks: blueprintData,
       },
     });
-  }, [blueprintData, dustClient, activeObjectTypeId]);
+  }, [blueprintData, dustClient]);
 
   useEffect(() => {
     setBlueprint();
   }, [setBlueprint]);
-
-  useEffect(() => {
-    if (autoSwitch) {
-      if (selectedObjectType) {
-        const selectedObject = objectsByObjectType[selectedObjectType];
-        if (
-          selectedObject &&
-          categories.Tool.objects.includes(selectedObject.name)
-        ) {
-          setActiveObjectTypeId(1);
-        } else {
-          setActiveObjectTypeId(selectedObjectType);
-        }
-      } else {
-        setActiveObjectTypeId(0);
-      }
-    }
-  }, [autoSwitch, selectedObjectType]);
 
   const handleAddWaypoint = async () => {
     if (!dustClient) {
