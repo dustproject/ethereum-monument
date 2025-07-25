@@ -16,7 +16,7 @@ export function useCursorPositionQuery() {
           try {
             const cursor = (await dustClient.provider.request({
               method: "getCursorPosition",
-            })) as { x: number; y: number; z: number };
+            })) as Cursor | null;
 
             if (!cursor) {
               return null;
