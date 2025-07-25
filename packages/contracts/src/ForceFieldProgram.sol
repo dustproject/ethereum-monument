@@ -10,6 +10,7 @@ import { EntityId, EntityTypeLib } from "@dust/world/src/types/EntityId.sol";
 import { ObjectType, ObjectTypes } from "@dust/world/src/types/ObjectType.sol";
 
 import {
+  HookContext,
   IAddFragment,
   IAttachProgram,
   IBuild,
@@ -18,8 +19,7 @@ import {
   IHit,
   IMine,
   IProgramValidator,
-  IRemoveFragment,
-  HookContext
+  IRemoveFragment
 } from "@dust/world/src/ProgramHooks.sol";
 
 import { EntityOrientation } from "@dust/world/src/codegen/tables/EntityOrientation.sol";
@@ -27,7 +27,7 @@ import { Orientation } from "@dust/world/src/types/Orientation.sol";
 
 import { Admin } from "./codegen/tables/Admin.sol";
 
-import { Contribution } from "./codegen/tables/Contribution.sol";
+import { BlueprintContribution } from "./codegen/tables/BlueprintContribution.sol";
 import { ForceFieldDamage } from "./codegen/tables/ForceFieldDamage.sol";
 
 import { ForceField } from "./codegen/tables/ForceField.sol";
@@ -61,7 +61,7 @@ contract ForceFieldProgram is
     ForceField.set(ctx.target);
   }
 
-  function onDetachProgram(HookContext calldata ctx ) public override onlyWorld {
+  function onDetachProgram(HookContext calldata ctx) public override onlyWorld {
     address admin = Admin.get();
     require(admin == ctx.caller.getPlayerAddress(), "Only admin can detach this program");
     ForceField.deleteRecord();
@@ -78,8 +78,8 @@ contract ForceFieldProgram is
       return;
     }
 
-    uint256 current = Contribution.get(player, ObjectTypes.Battery);
-    Contribution.set(player, ObjectTypes.Battery, current + energize.amount);
+    uint256 current = BlueprintContribution.get(player, ObjectTypes.Battery);
+    BlueprintContribution.set(player, ObjectTypes.Battery, current + energize.amount);
   }
 
   function onHit(HookContext calldata ctx, HitData calldata hit) external onlyWorld {
@@ -111,8 +111,8 @@ contract ForceFieldProgram is
     require(EntityOrientation.get(blockEntityId) == orientation, "Wrong blueprint direction");
 
     if (blueprintType == build.objectType) {
-      uint256 current = Contribution.get(player, blueprintType);
-      Contribution.set(player, blueprintType, current + 1);
+      uint256 current = BlueprintContribution.get(player, blueprintType);
+      BlueprintContribution.set(player, blueprintType, current + 1);
     } else {
       require(build.objectType == ObjectTypes.Dirt, "Only dirt scaffold can be built here");
     }

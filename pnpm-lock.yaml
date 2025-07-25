@@ -34,6 +34,9 @@ importers:
       '@latticexyz/world-consumer':
         specifier: 2.2.23-94cac741be24bb5743f2f36235cc3bb40012417a
         version: 2.2.23-94cac741be24bb5743f2f36235cc3bb40012417a(@aws-sdk/client-kms@3.848.0)(asn1.js@5.4.1)(typescript@5.8.3)(viem@2.33.0(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.23.8))(zod@3.23.8)
+      '@openzeppelin/contracts':
+        specifier: ^4.9.6
+        version: 4.9.6
       solady:
         specifier: ^0.1.14
         version: 0.1.24

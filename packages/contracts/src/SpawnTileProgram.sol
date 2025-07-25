@@ -5,7 +5,7 @@ import { WorldConsumer } from "@latticexyz/world-consumer/src/experimental/World
 import { System } from "@latticexyz/world/src/System.sol";
 import { WorldContextConsumer } from "@latticexyz/world/src/WorldContext.sol";
 
-import { IAttachProgram, IDetachProgram, ISpawn, HookContext } from "@dust/world/src/ProgramHooks.sol";
+import { HookContext, IAttachProgram, IDetachProgram, ISpawn } from "@dust/world/src/ProgramHooks.sol";
 
 import { Energy } from "@dust/world/src/codegen/tables/Energy.sol";
 import { IWorld } from "@dust/world/src/codegen/world/IWorld.sol";
@@ -13,8 +13,9 @@ import { EntityId } from "@dust/world/src/types/EntityId.sol";
 import { ObjectTypes } from "@dust/world/src/types/ObjectType.sol";
 
 import { Admin } from "./codegen/tables/Admin.sol";
-import { Contribution } from "./codegen/tables/Contribution.sol";
+
 import { ForceFieldDamage } from "./codegen/tables/ForceFieldDamage.sol";
+import { ForceFieldEnergy } from "./codegen/tables/ForceFieldEnergy.sol";
 import { SpawnEnergyConsumed } from "./codegen/tables/SpawnEnergyConsumed.sol";
 import { getForceField } from "./utils/getForceField.sol";
 
@@ -40,7 +41,7 @@ contract SpawnTileProgram is IAttachProgram, IDetachProgram, ISpawn, System, Wor
     require(forceFieldDamage == 0, "You are not welcome here");
 
     uint128 energyConsumed = SpawnEnergyConsumed.get(player);
-    uint256 energyContributed = Contribution.get(player, ObjectTypes.Battery);
+    uint256 energyContributed = ForceFieldEnergy.get(player);
 
     uint256 availableEnergy = energyContributed - energyConsumed;
     require(spawn.energy <= availableEnergy, "Not enough energy contributed");

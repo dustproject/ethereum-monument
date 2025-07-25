@@ -43,7 +43,7 @@ export default defineWorld({
       },
       key: [],
     },
-    Contribution: {
+    BlueprintContribution: {
       schema: {
         player: "address",
         objectType: "ObjectType",
@@ -58,6 +58,14 @@ export default defineWorld({
       },
       key: ["player"],
     },
+    ForceFieldEnergy: {
+      schema: {
+        player: "address",
+        energy: "uint256",
+      },
+      key: ["player"],
+    },
+
     // ForceField
     ForceField: {
       schema: {

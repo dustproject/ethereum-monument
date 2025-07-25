@@ -8,6 +8,7 @@
     "clean": "forge clean && shx rm -rf src/**/codegen",
     "deploy:local": ". ./set-env.sh local && mud deploy --alwaysRunPostDeploy --profile=$FOUNDRY_PROFILE --worldAddress=$WORLD_ADDRESS",
     "deploy:redstone": ". ./set-env.sh redstone && mud deploy --alwaysRunPostDeploy --profile=$FOUNDRY_PROFILE --worldAddress=$WORLD_ADDRESS --kms",
+    "get:blueprint": "tsx ./ts/scripts/getBlueprint.ts",
     "admin:blueprint:local": ". ./set-env.sh local && forge script SetBlueprint --sig 'run(string)'",
     "admin:blueprint:redstone": ". ./set-env.sh redstone && forge script SetBlueprint --aws --sig 'run(string)'",
     "encodeBlueprint": "tsx ./ts/scripts/encodeBlueprint.ts",
@@ -25,6 +26,7 @@
     "@latticexyz/store": "2.2.23-94cac741be24bb5743f2f36235cc3bb40012417a",
     "@latticexyz/world": "2.2.23-94cac741be24bb5743f2f36235cc3bb40012417a",
     "@latticexyz/world-consumer": "2.2.23-94cac741be24bb5743f2f36235cc3bb40012417a",
+    "@openzeppelin/contracts": "^4.9.6",
     "solady": "^0.1.14"
   },
   "devDependencies": {
