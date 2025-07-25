@@ -19,5 +19,5 @@ export default function App() {
     );
   }
 
-  return status === "dead" ? <Spawn /> : <Blueprint />;
+  return playerStatus === "dead" ? <Spawn /> : <Blueprint />;
 }
