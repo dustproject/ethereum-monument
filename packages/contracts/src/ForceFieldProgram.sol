@@ -6,29 +6,20 @@ import { WorldConsumer } from "@latticexyz/world-consumer/src/experimental/World
 import { System } from "@latticexyz/world/src/System.sol";
 import { WorldContextConsumer } from "@latticexyz/world/src/WorldContext.sol";
 
-import { defaultProgramSystem } from "@dust/programs/src/codegen/systems/DefaultProgramSystemLib.sol";
 import { EntityId, EntityTypeLib } from "@dust/world/src/types/EntityId.sol";
 import { ObjectType, ObjectTypes } from "@dust/world/src/types/ObjectType.sol";
 
 import {
-  AddFragmentContext,
-  AttachProgramContext,
-  BuildContext,
-  DetachProgramContext,
-  FuelContext,
-  HitContext,
   IAddFragment,
   IAttachProgram,
   IBuild,
   IDetachProgram,
-  IFuel,
+  IEnergize,
   IHit,
   IMine,
   IProgramValidator,
   IRemoveFragment,
-  MineContext,
-  RemoveFragmentContext,
-  ValidateProgramContext
+  HookContext
 } from "@dust/world/src/ProgramHooks.sol";
 
 import { EntityOrientation } from "@dust/world/src/codegen/tables/EntityOrientation.sol";
@@ -41,15 +32,13 @@ import { ForceFieldDamage } from "./codegen/tables/ForceFieldDamage.sol";
 
 import { ForceField } from "./codegen/tables/ForceField.sol";
 
-import { spawnTileProgram } from "./codegen/systems/SpawnTileProgramLib.sol";
-
 import { BlueprintLib } from "./BlueprintLib.sol";
 
 contract ForceFieldProgram is
   IAttachProgram,
   IDetachProgram,
   IProgramValidator,
-  IFuel,
+  IEnergize,
   IHit,
   IAddFragment,
   IRemoveFragment,
@@ -58,12 +47,12 @@ contract ForceFieldProgram is
   System,
   WorldConsumer(IWorld(address(0)))
 {
-  function validateProgram(ValidateProgramContext calldata ctx) external view {
+  function validateProgram(HookContext calldata ctx, ProgramData calldata) external view {
     address admin = Admin.get();
-    require(admin == ctx.caller.getPlayerAddress(), "Only admin can attach this program");
+    require(admin == ctx.caller.getPlayerAddress(), "Only admin can attach programs");
   }
 
-  function onAttachProgram(AttachProgramContext calldata ctx) public override onlyWorld {
+  function onAttachProgram(HookContext calldata ctx) public override onlyWorld {
     address admin = Admin.get();
     require(admin == ctx.caller.getPlayerAddress(), "Only admin can attach this program");
 
@@ -72,14 +61,13 @@ contract ForceFieldProgram is
     ForceField.set(ctx.target);
   }
 
-  function onDetachProgram(DetachProgramContext calldata ctx ) public override onlyWorld {
-    // TODO: check if safe call
+  function onDetachProgram(HookContext calldata ctx ) public override onlyWorld {
     address admin = Admin.get();
     require(admin == ctx.caller.getPlayerAddress(), "Only admin can detach this program");
     ForceField.deleteRecord();
   }
 
-  function onFuel(FuelContext calldata ctx) external onlyWorld {
+  function onEnergize(HookContext calldata ctx, EnergizeData calldata energize) external onlyWorld {
     if (ctx.caller.getObjectType() == ObjectTypes.Chest) {
       // If the caller is a chest, we don't apply incentives
       return;
@@ -91,53 +79,53 @@ contract ForceFieldProgram is
     }
 
     uint256 current = Contribution.get(player, ObjectTypes.Battery);
-    Contribution.set(player, ObjectTypes.Battery, current + ctx.fuelAmount);
+    Contribution.set(player, ObjectTypes.Battery, current + energize.amount);
   }
 
-  function onHit(HitContext calldata ctx) external onlyWorld {
+  function onHit(HookContext calldata ctx, HitData calldata hit) external onlyWorld {
     address player = ctx.caller.getPlayerAddress();
     if (player == address(0)) {
       return;
     }
 
     uint256 current = ForceFieldDamage.get(player);
-    ForceFieldDamage.set(player, current + ctx.damage);
+    ForceFieldDamage.set(player, current + hit.damage);
   }
 
-  function onAddFragment(AddFragmentContext calldata ctx) external view onlyWorld {
-    bool hasBlueprint = BlueprintLib.hasBlueprint(ctx.added.getPosition().fromFragmentCoord());
+  function onAddFragment(HookContext calldata, AddFragmentData calldata fragment) external view onlyWorld {
+    bool hasBlueprint = BlueprintLib.hasBlueprint(fragment.added.getPosition().fromFragmentCoord());
     require(hasBlueprint, "Added fragment does not have a blueprint");
   }
 
-  function onRemoveFragment(RemoveFragmentContext calldata) external view onlyWorld {
+  function onRemoveFragment(HookContext calldata, RemoveFragmentData calldata) external view onlyWorld {
     revert("Not allowed by forcefield");
   }
 
-  function onBuild(BuildContext calldata ctx) external onlyWorld {
+  function onBuild(HookContext calldata ctx, BuildData calldata build) external onlyWorld {
     address player = ctx.caller.getPlayerAddress();
 
-    (ObjectType blueprintType, Orientation orientation) = BlueprintLib.getBlock(ctx.coord);
+    (ObjectType blueprintType, Orientation orientation) = BlueprintLib.getBlock(build.coord);
     require(blueprintType != ObjectTypes.Null, "Blueprint not set for coord");
 
-    EntityId blockEntityId = EntityTypeLib.encodeBlock(ctx.coord);
+    EntityId blockEntityId = EntityTypeLib.encodeBlock(build.coord);
     require(EntityOrientation.get(blockEntityId) == orientation, "Wrong blueprint direction");
 
-    if (blueprintType == ctx.objectType) {
+    if (blueprintType == build.objectType) {
       uint256 current = Contribution.get(player, blueprintType);
       Contribution.set(player, blueprintType, current + 1);
     } else {
-      require(ctx.objectType == ObjectTypes.Dirt, "Only dirt scaffold can be built here");
+      require(build.objectType == ObjectTypes.Dirt, "Only dirt scaffold can be built here");
     }
   }
 
-  function onMine(MineContext calldata ctx) external view onlyWorld {
+  function onMine(HookContext calldata, MineData calldata mine) external view onlyWorld {
     // Additional protection for smart entities
-    require(!ctx.objectType.isSmartEntity(), "Cannot mine smart entities");
+    require(!mine.objectType.isSmartEntity(), "Cannot mine smart entities");
 
-    (ObjectType blueprintType,) = BlueprintLib.getBlock(ctx.coord);
+    (ObjectType blueprintType,) = BlueprintLib.getBlock(mine.coord);
     require(blueprintType != ObjectTypes.Null, "Not allowed to mine here");
 
-    require(ctx.objectType != blueprintType, "Not allowed by blueprint");
+    require(mine.objectType != blueprintType, "Not allowed by blueprint");
   }
 
   // Other hooks revert
