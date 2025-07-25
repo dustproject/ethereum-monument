@@ -20,7 +20,7 @@ import { ForceFieldDamage } from "./codegen/tables/ForceFieldDamage.sol";
 import { SpawnEnergyConsumed } from "./codegen/tables/SpawnEnergyConsumed.sol";
 import { getForceField } from "./utils/getForceField.sol";
 
-uint128 constant MIN_ENERGY_THRESHOLD_TO_SPAWN = 50_000_000_000_000_000_000;
+uint128 constant MIN_ENERGY_THRESHOLD_TO_SPAWN = 10_000_000_000_000_000_000;
 uint256 constant FREE_SPAWNS = 2;
 
 contract SpawnTileProgram is IAttachProgram, IDetachProgram, ISpawn, System, WorldConsumer(IWorld(address(0))) {
@@ -39,10 +39,14 @@ contract SpawnTileProgram is IAttachProgram, IDetachProgram, ISpawn, System, Wor
 
   function onSpawn(HookContext calldata ctx, SpawnData calldata spawn) external onlyWorld {
     address player = ctx.caller.getPlayerAddress();
+    if (Admin.get(player)) {
+      return;
+    }
+
     uint256 forceFieldDamage = ForceFieldDamage.get(player);
     require(forceFieldDamage == 0, "You are not welcome here");
 
-    (EntityId forceField,) = getForceField(ctx.target);
+    (EntityId forceField, ) = getForceField(ctx.target);
     require(
       forceField.exists() && Energy.getEnergy(forceField) >= MIN_ENERGY_THRESHOLD_TO_SPAWN,
       "Insufficient energy in force field"

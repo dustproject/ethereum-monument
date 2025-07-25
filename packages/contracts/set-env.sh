@@ -2,6 +2,8 @@
 
 ENV=$1
 
+export DEBUG=mud:*
+
 case "$ENV" in
   local)
     export FOUNDRY_PROFILE=local

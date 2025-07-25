@@ -68,26 +68,26 @@ library ForceFieldProgramLib {
 
   function onAddFragment(
     ForceFieldProgramType self,
-    HookContext memory __auxArg0,
+    HookContext memory ctx,
     IAddFragment.AddFragmentData memory fragment
   ) internal view {
-    return CallWrapper(self.toResourceId(), address(0)).onAddFragment(__auxArg0, fragment);
+    return CallWrapper(self.toResourceId(), address(0)).onAddFragment(ctx, fragment);
   }
 
   function onRemoveFragment(
     ForceFieldProgramType self,
-    HookContext memory __auxArg0,
-    IRemoveFragment.RemoveFragmentData memory __auxArg1
+    HookContext memory ctx,
+    IRemoveFragment.RemoveFragmentData memory __auxArg0
   ) internal view {
-    return CallWrapper(self.toResourceId(), address(0)).onRemoveFragment(__auxArg0, __auxArg1);
+    return CallWrapper(self.toResourceId(), address(0)).onRemoveFragment(ctx, __auxArg0);
   }
 
   function onBuild(ForceFieldProgramType self, HookContext memory ctx, IBuild.BuildData memory build) internal {
     return CallWrapper(self.toResourceId(), address(0)).onBuild(ctx, build);
   }
 
-  function onMine(ForceFieldProgramType self, HookContext memory __auxArg0, IMine.MineData memory mine) internal view {
-    return CallWrapper(self.toResourceId(), address(0)).onMine(__auxArg0, mine);
+  function onMine(ForceFieldProgramType self, HookContext memory ctx, IMine.MineData memory mine) internal view {
+    return CallWrapper(self.toResourceId(), address(0)).onMine(ctx, mine);
   }
 
   function _msgSender(ForceFieldProgramType self) internal view returns (address __auxRet0) {
@@ -167,7 +167,7 @@ library ForceFieldProgramLib {
 
   function onAddFragment(
     CallWrapper memory self,
-    HookContext memory __auxArg0,
+    HookContext memory ctx,
     IAddFragment.AddFragmentData memory fragment
   ) internal view {
     // if the contract calling this function is a root system, it should use `callAsRoot`
@@ -175,7 +175,7 @@ library ForceFieldProgramLib {
 
     bytes memory systemCall = abi.encodeCall(
       _onAddFragment_HookContext_IAddFragment_AddFragmentData.onAddFragment,
-      (__auxArg0, fragment)
+      (ctx, fragment)
     );
     bytes memory worldCall = self.from == address(0)
       ? abi.encodeCall(IWorldCall.call, (self.systemId, systemCall))
@@ -187,15 +187,15 @@ library ForceFieldProgramLib {
 
   function onRemoveFragment(
     CallWrapper memory self,
-    HookContext memory __auxArg0,
-    IRemoveFragment.RemoveFragmentData memory __auxArg1
+    HookContext memory ctx,
+    IRemoveFragment.RemoveFragmentData memory __auxArg0
   ) internal view {
     // if the contract calling this function is a root system, it should use `callAsRoot`
     if (address(_world()) == address(this)) revert ForceFieldProgramLib_CallingFromRootSystem();
 
     bytes memory systemCall = abi.encodeCall(
       _onRemoveFragment_HookContext_IRemoveFragment_RemoveFragmentData.onRemoveFragment,
-      (__auxArg0, __auxArg1)
+      (ctx, __auxArg0)
     );
     bytes memory worldCall = self.from == address(0)
       ? abi.encodeCall(IWorldCall.call, (self.systemId, systemCall))
@@ -215,11 +215,11 @@ library ForceFieldProgramLib {
       : _world().callFrom(self.from, self.systemId, systemCall);
   }
 
-  function onMine(CallWrapper memory self, HookContext memory __auxArg0, IMine.MineData memory mine) internal view {
+  function onMine(CallWrapper memory self, HookContext memory ctx, IMine.MineData memory mine) internal view {
     // if the contract calling this function is a root system, it should use `callAsRoot`
     if (address(_world()) == address(this)) revert ForceFieldProgramLib_CallingFromRootSystem();
 
-    bytes memory systemCall = abi.encodeCall(_onMine_HookContext_IMine_MineData.onMine, (__auxArg0, mine));
+    bytes memory systemCall = abi.encodeCall(_onMine_HookContext_IMine_MineData.onMine, (ctx, mine));
     bytes memory worldCall = self.from == address(0)
       ? abi.encodeCall(IWorldCall.call, (self.systemId, systemCall))
       : abi.encodeCall(IWorldCall.callFrom, (self.from, self.systemId, systemCall));
@@ -305,24 +305,24 @@ library ForceFieldProgramLib {
 
   function onAddFragment(
     RootCallWrapper memory self,
-    HookContext memory __auxArg0,
+    HookContext memory ctx,
     IAddFragment.AddFragmentData memory fragment
   ) internal view {
     bytes memory systemCall = abi.encodeCall(
       _onAddFragment_HookContext_IAddFragment_AddFragmentData.onAddFragment,
-      (__auxArg0, fragment)
+      (ctx, fragment)
     );
     SystemCall.staticcallOrRevert(self.from, self.systemId, systemCall);
   }
 
   function onRemoveFragment(
     RootCallWrapper memory self,
-    HookContext memory __auxArg0,
-    IRemoveFragment.RemoveFragmentData memory __auxArg1
+    HookContext memory ctx,
+    IRemoveFragment.RemoveFragmentData memory __auxArg0
   ) internal view {
     bytes memory systemCall = abi.encodeCall(
       _onRemoveFragment_HookContext_IRemoveFragment_RemoveFragmentData.onRemoveFragment,
-      (__auxArg0, __auxArg1)
+      (ctx, __auxArg0)
     );
     SystemCall.staticcallOrRevert(self.from, self.systemId, systemCall);
   }
@@ -332,8 +332,8 @@ library ForceFieldProgramLib {
     SystemCall.callWithHooksOrRevert(self.from, self.systemId, systemCall, msg.value);
   }
 
-  function onMine(RootCallWrapper memory self, HookContext memory __auxArg0, IMine.MineData memory mine) internal view {
-    bytes memory systemCall = abi.encodeCall(_onMine_HookContext_IMine_MineData.onMine, (__auxArg0, mine));
+  function onMine(RootCallWrapper memory self, HookContext memory ctx, IMine.MineData memory mine) internal view {
+    bytes memory systemCall = abi.encodeCall(_onMine_HookContext_IMine_MineData.onMine, (ctx, mine));
     SystemCall.staticcallOrRevert(self.from, self.systemId, systemCall);
   }
 
@@ -416,11 +416,11 @@ interface _onHit_HookContext_IHit_HitData {
 }
 
 interface _onAddFragment_HookContext_IAddFragment_AddFragmentData {
-  function onAddFragment(HookContext memory __auxArg0, IAddFragment.AddFragmentData memory fragment) external;
+  function onAddFragment(HookContext memory ctx, IAddFragment.AddFragmentData memory fragment) external;
 }
 
 interface _onRemoveFragment_HookContext_IRemoveFragment_RemoveFragmentData {
-  function onRemoveFragment(HookContext memory __auxArg0, IRemoveFragment.RemoveFragmentData memory __auxArg1) external;
+  function onRemoveFragment(HookContext memory ctx, IRemoveFragment.RemoveFragmentData memory __auxArg0) external;
 }
 
 interface _onBuild_HookContext_IBuild_BuildData {
@@ -428,7 +428,7 @@ interface _onBuild_HookContext_IBuild_BuildData {
 }
 
 interface _onMine_HookContext_IMine_MineData {
-  function onMine(HookContext memory __auxArg0, IMine.MineData memory mine) external;
+  function onMine(HookContext memory ctx, IMine.MineData memory mine) external;
 }
 
 interface __msgSender {

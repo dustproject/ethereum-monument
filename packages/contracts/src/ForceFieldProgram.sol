@@ -9,18 +9,7 @@ import { WorldContextConsumer } from "@latticexyz/world/src/WorldContext.sol";
 import { EntityId, EntityTypeLib } from "@dust/world/src/types/EntityId.sol";
 import { ObjectType, ObjectTypes } from "@dust/world/src/types/ObjectType.sol";
 
-import {
-  HookContext,
-  IAddFragment,
-  IAttachProgram,
-  IBuild,
-  IDetachProgram,
-  IEnergize,
-  IHit,
-  IMine,
-  IProgramValidator,
-  IRemoveFragment
-} from "@dust/world/src/ProgramHooks.sol";
+import { HookContext, IAddFragment, IAttachProgram, IBuild, IDetachProgram, IEnergize, IHit, IMine, IProgramValidator, IRemoveFragment } from "@dust/world/src/ProgramHooks.sol";
 
 import { EntityOrientation } from "@dust/world/src/codegen/tables/EntityOrientation.sol";
 import { Orientation } from "@dust/world/src/types/Orientation.sol";
@@ -93,17 +82,30 @@ contract ForceFieldProgram is
     ForceFieldDamage.set(player, current + hit.damage);
   }
 
-  function onAddFragment(HookContext calldata, AddFragmentData calldata fragment) external view onlyWorld {
+  function onAddFragment(HookContext calldata ctx, AddFragmentData calldata fragment) external view onlyWorld {
+    address player = ctx.caller.getPlayerAddress();
+    if (Admin.get(player)) {
+      return;
+    }
+
     bool hasBlueprint = BlueprintLib.hasBlueprint(fragment.added.getPosition().fromFragmentCoord());
     require(hasBlueprint, "Added fragment does not have a blueprint");
   }
 
-  function onRemoveFragment(HookContext calldata, RemoveFragmentData calldata) external view onlyWorld {
+  function onRemoveFragment(HookContext calldata ctx, RemoveFragmentData calldata) external view onlyWorld {
+    address player = ctx.caller.getPlayerAddress();
+    if (Admin.get(player)) {
+      return;
+    }
+
     revert("Not allowed by forcefield");
   }
 
   function onBuild(HookContext calldata ctx, BuildData calldata build) external onlyWorld {
     address player = ctx.caller.getPlayerAddress();
+    if (Admin.get(player)) {
+      return;
+    }
 
     (ObjectType blueprintType, Orientation orientation) = BlueprintLib.getBlock(build.coord);
     require(blueprintType != ObjectTypes.Null, "Blueprint not set for coord");
@@ -119,11 +121,16 @@ contract ForceFieldProgram is
     }
   }
 
-  function onMine(HookContext calldata, MineData calldata mine) external view onlyWorld {
+  function onMine(HookContext calldata ctx, MineData calldata mine) external view onlyWorld {
+    address player = ctx.caller.getPlayerAddress();
+    if (Admin.get(player)) {
+      return;
+    }
+
     // Additional protection for smart entities
     require(!mine.objectType.isSmartEntity(), "Cannot mine smart entities");
 
-    (ObjectType blueprintType,) = BlueprintLib.getBlock(mine.coord);
+    (ObjectType blueprintType, ) = BlueprintLib.getBlock(mine.coord);
     require(blueprintType != ObjectTypes.Null, "Not allowed to mine here");
 
     require(mine.objectType != blueprintType, "Not allowed by blueprint");
