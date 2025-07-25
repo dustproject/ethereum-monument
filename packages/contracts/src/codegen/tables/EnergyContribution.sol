@@ -16,9 +16,9 @@ import { Schema } from "@latticexyz/store/src/Schema.sol";
 import { EncodedLengths, EncodedLengthsLib } from "@latticexyz/store/src/EncodedLengths.sol";
 import { ResourceId } from "@latticexyz/store/src/ResourceId.sol";
 
-library ForceFieldEnergy {
-  // Hex below is the result of `WorldResourceIdLib.encode({ namespace: "eth_monument", name: "ForceFieldEnergy", typeId: RESOURCE_TABLE });`
-  ResourceId constant _tableId = ResourceId.wrap(0x74626574685f6d6f6e756d656e740000466f7263654669656c64456e65726779);
+library EnergyContribution {
+  // Hex below is the result of `WorldResourceIdLib.encode({ namespace: "eth_monument", name: "EnergyContributi", typeId: RESOURCE_TABLE });`
+  ResourceId constant _tableId = ResourceId.wrap(0x74626574685f6d6f6e756d656e740000456e65726779436f6e74726962757469);
 
   FieldLayout constant _fieldLayout =
     FieldLayout.wrap(0x0020010020000000000000000000000000000000000000000000000000000000);

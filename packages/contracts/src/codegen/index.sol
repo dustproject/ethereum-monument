@@ -6,7 +6,7 @@ pragma solidity >=0.8.24;
 import { Admin } from "./tables/Admin.sol";
 import { BlueprintContribution } from "./tables/BlueprintContribution.sol";
 import { ForceFieldDamage } from "./tables/ForceFieldDamage.sol";
-import { ForceFieldEnergy } from "./tables/ForceFieldEnergy.sol";
+import { EnergyContribution } from "./tables/EnergyContribution.sol";
 import { ForceField } from "./tables/ForceField.sol";
 import { BlueprintChunk } from "./tables/BlueprintChunk.sol";
 import { SpawnEnergyConsumed } from "./tables/SpawnEnergyConsumed.sol";

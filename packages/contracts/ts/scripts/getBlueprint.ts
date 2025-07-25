@@ -13,7 +13,7 @@ interface IndexerResponse {
 }
 
 async function queryIndexer(sql: string): Promise<IndexerResponse> {
-  const INDEXER_URL = process.env.INDEXER_URL || "https://dozer.onrender.com/q";
+  const INDEXER_URL = process.env.INDEXER_URL || "https://indexer.mud.redstonechain.com/q";
   const CONTRACT_ADDRESS = process.env.WORLD_ADDRESS || "0x253eb85B3C953bFE3827CC14a151262482E7189C";
 
   const payload = [

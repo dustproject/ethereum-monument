@@ -15,7 +15,7 @@ import { ObjectTypes } from "@dust/world/src/types/ObjectType.sol";
 import { Admin } from "./codegen/tables/Admin.sol";
 
 import { ForceFieldDamage } from "./codegen/tables/ForceFieldDamage.sol";
-import { ForceFieldEnergy } from "./codegen/tables/ForceFieldEnergy.sol";
+import { EnergyContribution } from "./codegen/tables/EnergyContribution.sol";
 import { SpawnEnergyConsumed } from "./codegen/tables/SpawnEnergyConsumed.sol";
 import { getForceField } from "./utils/getForceField.sol";
 
@@ -41,7 +41,7 @@ contract SpawnTileProgram is IAttachProgram, IDetachProgram, ISpawn, System, Wor
     require(forceFieldDamage == 0, "You are not welcome here");
 
     uint128 energyConsumed = SpawnEnergyConsumed.get(player);
-    uint256 energyContributed = ForceFieldEnergy.get(player);
+    uint256 energyContributed = EnergyContribution.get(player);
 
     uint256 availableEnergy = energyContributed - energyConsumed;
     require(spawn.energy <= availableEnergy, "Not enough energy contributed");

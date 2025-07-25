@@ -58,14 +58,13 @@ export default defineWorld({
       },
       key: ["player"],
     },
-    ForceFieldEnergy: {
+    EnergyContribution: {
       schema: {
         player: "address",
         energy: "uint256",
       },
       key: ["player"],
     },
-
     // ForceField
     ForceField: {
       schema: {

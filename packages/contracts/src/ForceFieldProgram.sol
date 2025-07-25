@@ -28,6 +28,7 @@ import { Orientation } from "@dust/world/src/types/Orientation.sol";
 import { Admin } from "./codegen/tables/Admin.sol";
 
 import { BlueprintContribution } from "./codegen/tables/BlueprintContribution.sol";
+import { EnergyContribution } from "./codegen/tables/EnergyContribution.sol";
 import { ForceFieldDamage } from "./codegen/tables/ForceFieldDamage.sol";
 
 import { ForceField } from "./codegen/tables/ForceField.sol";
@@ -78,8 +79,8 @@ contract ForceFieldProgram is
       return;
     }
 
-    uint256 current = BlueprintContribution.get(player, ObjectTypes.Battery);
-    BlueprintContribution.set(player, ObjectTypes.Battery, current + energize.amount);
+    uint256 current = EnergyContribution.get(player);
+    EnergyContribution.set(player, current + energize.amount);
   }
 
   function onHit(HookContext calldata ctx, HitData calldata hit) external onlyWorld {
