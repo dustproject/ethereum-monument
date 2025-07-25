@@ -1,5 +1,10 @@
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 
+const isDev = import.meta.env.MODE === "development";
+const workerUrl = isDev
+  ? "http://localhost:3002"
+  : "https://monument-blueprint-worker.latticexyz.workers.dev";
+
 async function fetchPlayerPositionBlueprint(playerPosition: {
   x: number;
   y: number;
@@ -7,7 +12,7 @@ async function fetchPlayerPositionBlueprint(playerPosition: {
 }) {
   try {
     const response = await fetch(
-      `https://monument-blueprint-worker.latticexyz.workers.dev/?x=${playerPosition.x}&y=${playerPosition.y}&z=${playerPosition.z}`
+      `${workerUrl}/?x=${playerPosition.x}&y=${playerPosition.y}&z=${playerPosition.z}`
     );
     return response.json();
   } catch (error) {
@@ -23,7 +28,7 @@ async function fetchCursorBlueprint(cursorPosition: {
 }) {
   try {
     const response = await fetch(
-      `https://monument-blueprint-worker.latticexyz.workers.dev/?x=${cursorPosition.x}&y=${cursorPosition.y}&z=${cursorPosition.z}`
+      `${workerUrl}/?x=${cursorPosition.x}&y=${cursorPosition.y}&z=${cursorPosition.z}`
     );
     return response.json();
   } catch (error) {

@@ -2,6 +2,9 @@ scrollback: 10000
 procs:
   app:
     shell: pnpm vite --port 3001
+  worker:
+    cwd: ../monument-blueprint-worker
+    shell: pnpm wrangler dev --port 3002
   tunnel:
     # shell: source .env && cloudflared tunnel run --token $CLOUDFLARE_TUNNEL_TOKEN
     shell: cloudflared tunnel run
