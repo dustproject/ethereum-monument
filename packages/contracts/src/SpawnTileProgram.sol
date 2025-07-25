@@ -19,7 +19,7 @@ import { EnergyContribution } from "./codegen/tables/EnergyContribution.sol";
 import { SpawnEnergyConsumed } from "./codegen/tables/SpawnEnergyConsumed.sol";
 import { getForceField } from "./utils/getForceField.sol";
 
-uint128 constant MIN_ENERGY_THRESHOLD_TO_SPAWN = 200_000_000_000_000_000_000;
+uint128 constant MIN_ENERGY_THRESHOLD_TO_SPAWN = 50_000_000_000_000_000_000;
 
 contract SpawnTileProgram is IAttachProgram, IDetachProgram, ISpawn, System, WorldConsumer(IWorld(address(0))) {
   function onAttachProgram(HookContext calldata ctx) public view override onlyWorld {
