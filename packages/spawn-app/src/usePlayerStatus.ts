@@ -4,7 +4,7 @@ import { stash, tables } from "./mud/stash";
 import { useMemo } from "react";
 import { bigIntMax } from "@latticexyz/common/utils";
 
-export function usePlayerStatus(): "alive" | "dead" {
+export function usePlayerStatus(): "alive" | "dead" | undefined {
   const energy = useRecord({
     stash,
     table: tables.Energy,
@@ -19,6 +19,10 @@ export function usePlayerStatus(): "alive" | "dead" {
     const energyDrained = elapsed * energy.drainRate;
     return bigIntMax(0n, energy.energy - energyDrained);
   }, [energy]);
+
+  if (!optimisticEnergy) {
+    return undefined;
+  }
 
   return optimisticEnergy ? "alive" : "dead";
 }
