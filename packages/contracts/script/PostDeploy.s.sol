@@ -11,18 +11,22 @@ import { console } from "forge-std/console.sol";
 
 import { forceFieldProgram } from "../src/codegen/systems/ForceFieldProgramLib.sol";
 
+
+address constant ADMIN =0xE0ae70caBb529336e25FA7a1f036b77ad0089d2a;
+
+
 contract PostDeploy is Script {
   using WorldResourceIdInstance for ResourceId;
 
   function run(address worldAddress) external {
     StoreSwitch.setStoreAddress(worldAddress);
 
-    if (Admin.get() == address(0)) {
-      address admin = startBroadcast();
-      console.log("Setting admin to", admin);
-      Admin.setAdmin(admin);
-      vm.stopBroadcast();
-    }
+    address sender = startBroadcast();
+    console.log("Setting admin", ADMIN);
+    Admin.set(ADMIN, true);
+    console.log("Setting admin", sender);
+    Admin.set(sender, true);
+    vm.stopBroadcast();
 
     _setWorldAddress(worldAddress);
   }

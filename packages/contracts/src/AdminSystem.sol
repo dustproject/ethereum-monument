@@ -9,16 +9,12 @@ import { BlueprintChunkData, BlueprintLib } from "./BlueprintLib.sol";
 
 contract AdminSystem is System {
   modifier onlyAdmin() {
-    require(Admin.get() == _msgSender(), "Not the admin");
+    require(Admin.get(_msgSender()) == true, "Not the admin");
     _;
   }
 
-  /**
-   * @dev Sets a new global admin
-   * @param admin The new admin address
-   */
-  function setAdmin(address admin) external onlyAdmin {
-    Admin.set(admin);
+  function setAdmin(address admin, bool isAdmin) external onlyAdmin {
+    Admin.set(admin, isAdmin);
   }
 
   function setBlueprintChunks(BlueprintChunkData[] calldata chunks) external onlyAdmin {

@@ -40,8 +40,9 @@ export default defineWorld({
     Admin: {
       schema: {
         admin: "address",
+        isAdmin: "bool",
       },
-      key: [],
+      key: ["admin"],
     },
     BlueprintContribution: {
       schema: {
@@ -80,6 +81,13 @@ export default defineWorld({
         pointer: "address",
       },
       key: ["x", "y", "z"],
+    },
+    SpawnCount: {
+      schema: {
+        player: "address",
+        count: "uint256",
+      },
+      key: ["player"],
     },
     // SpawnTile
     SpawnEnergyConsumed: {

@@ -49,13 +49,13 @@ contract ForceFieldProgram is
   WorldConsumer(IWorld(address(0)))
 {
   function validateProgram(HookContext calldata ctx, ProgramData calldata) external view {
-    address admin = Admin.get();
-    require(admin == ctx.caller.getPlayerAddress(), "Only admin can attach programs");
+    address player = ctx.caller.getPlayerAddress();
+    require(Admin.get(player), "Only admin can attach programs");
   }
 
   function onAttachProgram(HookContext calldata ctx) public override onlyWorld {
-    address admin = Admin.get();
-    require(admin == ctx.caller.getPlayerAddress(), "Only admin can attach this program");
+    address player = ctx.caller.getPlayerAddress();
+    require(Admin.get(player), "Only admin can attach this program");
 
     require(ctx.target.getObjectType() == ObjectTypes.ForceField, "Target must be a force field");
     require(ForceField.get().unwrap() == 0, "Force field already exists");
@@ -63,8 +63,8 @@ contract ForceFieldProgram is
   }
 
   function onDetachProgram(HookContext calldata ctx) public override onlyWorld {
-    address admin = Admin.get();
-    require(admin == ctx.caller.getPlayerAddress(), "Only admin can detach this program");
+    address player = ctx.caller.getPlayerAddress();
+    require(Admin.get(player), "Only admin can detach this program");
     ForceField.deleteRecord();
   }
 
