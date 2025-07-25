@@ -1,0 +1,17 @@
+{
+	"name": "monument-blueprint-worker",
+	"version": "0.0.0",
+	"private": true,
+	"scripts": {
+		"deploy": "wrangler deploy",
+		"dev": "wrangler dev"
+	},
+	"devDependencies": {
+		"@cloudflare/workers-types": "^4.20250715.0",
+		"typescript": "^5.5.2",
+		"wrangler": "^4.24.3"
+	},
+	"dependencies": {
+		"viem": "2.30.5"
+	}
+}
