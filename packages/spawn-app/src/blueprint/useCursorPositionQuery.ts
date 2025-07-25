@@ -14,9 +14,9 @@ export function useCursorPositionQuery() {
       ? skipToken
       : async () => {
           try {
-            const cursor = await dustClient.provider.request({
+            const cursor = (await dustClient.provider.request({
               method: "getCursorPosition",
-            });
+            })) as { x: number; y: number; z: number };
 
             if (!cursor) {
               return null;
