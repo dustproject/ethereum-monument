@@ -8,6 +8,13 @@ import type { Block } from "./Block";
 import type { Chunk } from "./encodeBlueprintChunks";
 import { encodeBlueprintChunks, groupByChunk } from "./encodeBlueprintChunks";
 
+const ID_MAP: Record<number, number> = {
+  [63]: 2, // border acacia leaf ->
+  [62]: 2, // spruce leaf ->
+  [58]: 2, // oak leaf ->
+  [59]: 2, // birch leaf ->
+} as const;
+
 async function readBlueprint(filePath: string): Promise<Block[]> {
   const absolutePath = path.resolve(filePath);
 
@@ -101,30 +108,23 @@ async function main() {
 
   try {
     console.log("Reading blueprint file...");
-    const voxels = await readBlueprint(filePath);
+    let voxels = await readBlueprint(filePath);
     console.log(`Loaded ${voxels.length} blocks`);
+
+    // Map ids to the actual materials
+    voxels = voxels.map((block) => ({
+      ...block,
+      id: ID_MAP[block.id] ?? 1,
+    }));
 
     const chunks = groupByChunk(voxels);
     console.log(`Grouped into ${chunks.length} chunks.`);
 
     // Filter out isolated air chunks
-    let filteredChunks = filterIsolatedAirChunks(chunks);
+    const filteredChunks = filterIsolatedAirChunks(chunks);
     console.log(
       `Filtered to ${filteredChunks.length} chunks (removed ${chunks.length - filteredChunks.length} isolated air chunks).`,
     );
-
-    // Temporary filter the main altar: remove chunks in volume x: [31], y: [9,10], z: [-100,-99]
-    const beforeVolumeFilter = filteredChunks.length;
-    filteredChunks = filteredChunks.filter((chunk) => {
-      const x = chunk.chunkCoord[0];
-      const y = chunk.chunkCoord[1];
-      const z = chunk.chunkCoord[2];
-      return !(x === 31 && y >= 9 && y <= 10 && z >= -100 && z <= -99);
-    });
-    console.log(
-      `Removed ${beforeVolumeFilter - filteredChunks.length} chunks in volume x:[31], y: [9,10], z:[-100,-99].`,
-    );
-
     // For each chunk log the number of unique block types and total number of blocks
     // for (const chunk of filteredChunks) {
     //   const uniqueBlocks = new Set(chunk.blocks.map((b) => `${b.id}-${b.orientation}`));
