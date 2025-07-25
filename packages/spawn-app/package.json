@@ -15,8 +15,6 @@
     "@latticexyz/stash": "2.2.23-e76d72504e7ee51c76fa380bdc4a56f4815b7b59",
     "@latticexyz/store-sync": "2.2.23-e76d72504e7ee51c76fa380bdc4a56f4815b7b59",
     "@latticexyz/world": "2.2.23-e76d72504e7ee51c76fa380bdc4a56f4815b7b59",
-    "@permutation-city/common": "https://pkg.pr.new/latticexyz/permutation-city/@permutation-city/common@0f1e513",
-    "@permutation-city/ui": "https://pkg.pr.new/latticexyz/permutation-city/@permutation-city/ui@0f1e513",
     "@tanstack/react-query": "^5.83.0",
     "dustkit": "https://pkg.pr.new/dustproject/dust/dustkit@27f724c",
     "react": "^18.2.0",
