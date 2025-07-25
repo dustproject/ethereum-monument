@@ -21,7 +21,7 @@ async function fetchPointer(coord: ReadonlyVec3) {
 	const body = JSON.stringify([
 		{
 			address: '0x253eb85B3C953bFE3827CC14a151262482E7189C',
-			query: `SELECT "pointer" FROM "permutation__BlueprintChunk" WHERE "x" = ${coord[0]} AND "y" = ${coord[1]} AND "z" = ${coord[2]};`,
+			query: `SELECT "pointer" FROM "eth_monument__BlueprintChunk" WHERE "x" = ${coord[0]} AND "y" = ${coord[1]} AND "z" = ${coord[2]};`,
 		},
 	]);
 	const response = await fetch('https://indexer.mud.redstonechain.com/q', {
