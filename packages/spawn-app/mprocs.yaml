@@ -3,4 +3,5 @@ procs:
   app:
     shell: pnpm vite --port 3001
   tunnel:
-    shell: source .env && cloudflared tunnel run --token $CLOUDFLARE_TUNNEL_TOKEN
+    # shell: source .env && cloudflared tunnel run --token $CLOUDFLARE_TUNNEL_TOKEN
+    shell: cloudflared tunnel run
