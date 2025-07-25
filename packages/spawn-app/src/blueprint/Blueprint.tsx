@@ -140,25 +140,7 @@ export function Blueprint() {
           (569, 147, -1519)
         </button>{" "}
         and build the monument together!
-        <br />
-        <br />
-        {/* Every contribution matters and is permanently recorded onchain. Whether
-        you're placing blocks to complete the blueprint or donating batteries to
-        power the protective force field that will preserve the monument for
-        generations.
-        <br />
-        <br />
-        Spawn using the button below, and open the "Ethereum Monument" app to
-        begin placing blocks according to the blueprint. */}
       </p>
-      {/* {error && <p className="text-red-500 text-center">{error}</p>} */}
-      {/* <button
-        className="bg-blue-500 text-white p-2 hover:bg-blue-600 active:bg-blue-700"
-        onClick={handleSpawn}
-        disabled={processing}
-      >
-        {processing ? "Spawning..." : "Spawn at the Ethereum Monument"}
-      </button> */}
     </div>
   );
 }
