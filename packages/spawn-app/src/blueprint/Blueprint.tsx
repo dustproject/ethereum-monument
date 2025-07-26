@@ -38,6 +38,12 @@ export function Blueprint() {
 
   const setBlueprint = useCallback(async () => {
     if (!dustClient || !blueprintData) return;
+    console.log("blueprintData", blueprintData);
+    for (const block of blueprintData) {
+      if (block.x === 60 && block.y === 160 && block.z === -89) {
+        console.log("Found block at 60,160,-89", block);
+      }
+    }
 
     await dustClient.provider.request({
       method: "setBlueprint",
