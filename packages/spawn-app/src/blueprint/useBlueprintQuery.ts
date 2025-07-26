@@ -55,26 +55,49 @@ export function useBlueprintQuery({
       cursorPosition?.z,
     ],
     queryFn: async () => {
-      const playerPositionBlueprint =
-        await fetchPlayerPositionBlueprint(playerPosition);
-
-      const finalBlueprint = [...(playerPositionBlueprint ?? [])];
-      if (
-        cursorPosition &&
-        !(
-          cursorPosition.x === playerPosition.x &&
-          cursorPosition.y === playerPosition.y &&
-          cursorPosition.z === playerPosition.z
-        )
+      const lowermostCoord = [34, 75, -93];
+      const lowermostChunkCoord = [
+        Math.floor(lowermostCoord[0] / 16),
+        Math.floor(lowermostCoord[1] / 16),
+        Math.floor(lowermostCoord[2] / 16),
+      ];
+      const uppermostCoord = [85, 162, -92];
+      const uppermostCoordChunkCoord = [
+        Math.floor(uppermostCoord[0] / 16),
+        Math.floor(uppermostCoord[1] / 16),
+        Math.floor(uppermostCoord[2] / 16),
+      ];
+      const blueprintPromise: Promise[] = [];
+      for (
+        let x = lowermostChunkCoord[0];
+        x <= uppermostCoordChunkCoord[0];
+        x++
       ) {
-        try {
-          const cursorBlueprint = await fetchCursorBlueprint(cursorPosition);
-          finalBlueprint.push(...cursorBlueprint);
-        } catch (error) {
-          console.error(error);
+        for (
+          let y = lowermostChunkCoord[1];
+          y <= uppermostCoordChunkCoord[1];
+          y++
+        ) {
+          for (
+            let z = lowermostChunkCoord[2];
+            z <= uppermostCoordChunkCoord[2];
+            z++
+          ) {
+            const chunkPosition = { x, y, z };
+            console.log("fetching chunk at", chunkPosition);
+            const chunkBlueprint = fetchPlayerPositionBlueprint(chunkPosition);
+            blueprintPromise.push(chunkBlueprint);
+          }
         }
       }
 
+      console.log("waiting for all blueprints to resolve");
+      const allBlueprints = await Promise.all(blueprintPromise);
+      console.log("allBlueprints", allBlueprints);
+      let finalBlueprint = [];
+      for (const blueprint of allBlueprints) {
+        finalBlueprint = [...finalBlueprint, ...(blueprint ?? [])];
+      }
       return finalBlueprint;
     },
     placeholderData: keepPreviousData,
