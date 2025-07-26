@@ -68,17 +68,21 @@ export function Blueprint() {
 
   if (!isBlueprintLoading && (!blueprintData || blueprintData.length === 0)) {
     return (
-      <p className="text-left uppercase leading-normal">
-        You&apos;re too far from the Ethereum Monument. Come to{" "}
-        <button
-          type="button"
-          className="text-[#FAE792]"
-          onClick={handleAddWaypoint}
-        >
-          (60, 161, -89)
-        </button>{" "}
-        to build the monument.
-      </p>
+      <div className="flex flex-col h-screen justify-between">
+        <p className="pt-10 px-10">
+          <img src="/10-years-ethereum.png" alt="Ethereum 10th Anniversary" />
+          <br />
+          You&apos;re too far from the Ethereum Monument. Come over to{" "}
+          <button
+            type="button"
+            className="underline"
+            onClick={handleAddWaypoint}
+          >
+            (60, 161, -89)
+          </button>{" "}
+          and build the monument together!
+        </p>
+      </div>
     );
   }
 
@@ -89,7 +93,7 @@ export function Blueprint() {
         <br />
         Come over to the Ethereum Monument{" "}
         <button type="button" className="underline" onClick={handleAddWaypoint}>
-          (569, 147, -1519)
+          (60, 161, -89)
         </button>{" "}
         and build the monument together!
       </p>
