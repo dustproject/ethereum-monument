@@ -47,7 +47,15 @@ export function useBlueprintQuery({
       const uppermostVoxelCoord = [85, 162, -92] as const;
       const uppermostChunkCoord = toChunkCoord(uppermostVoxelCoord);
 
-      const blueprintPromise: Promise<unknown>[] = [];
+      const blueprintPromise: Promise<
+        {
+          objectTypeId: number;
+          x: number;
+          y: number;
+          z: number;
+          orientation: number;
+        }[]
+      >[] = [];
       for (let x = lowermostChunkCoord[0]; x <= uppermostChunkCoord[0]; x++) {
         for (let y = lowermostChunkCoord[1]; y <= uppermostChunkCoord[1]; y++) {
           for (

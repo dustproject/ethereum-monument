@@ -1,14 +1,20 @@
 import { useCallback, useEffect, useMemo } from "react";
-import { useCursorPositionQuery } from "./useCursorPositionQuery";
 import { usePlayerPositionQuery } from "./usePlayerPositionQuery";
 import { useBlueprintQuery } from "./useBlueprintQuery";
-import { usePreviousNonNull } from "./usePreviousNonNull";
 import { dustClient } from "../dustClient";
+import { useRecords } from "@latticexyz/stash/react";
+import { stash, tables } from "../mud/stash";
 
 export function Blueprint() {
-  const { data: cursor } = useCursorPositionQuery();
-  const prevCursor = usePreviousNonNull(cursor);
   const { data: playerPosition } = usePlayerPositionQuery();
+  const blueprintContributions = useRecords({
+    stash,
+    table: tables.BlueprintContribution,
+  });
+  const energyContributions = useRecords({
+    stash,
+    table: tables.EnergyContribution,
+  });
 
   const {
     x: chunkX,
@@ -29,21 +35,10 @@ export function Blueprint() {
         y: chunkY,
         z: chunkZ,
       },
-      cursorPosition: {
-        x: cursor?.x ?? prevCursor?.x ?? 0,
-        y: cursor?.y ?? prevCursor?.y ?? 0,
-        z: cursor?.z ?? prevCursor?.z ?? 0,
-      },
     });
 
   const setBlueprint = useCallback(async () => {
     if (!dustClient || !blueprintData) return;
-    console.log("blueprintData", blueprintData);
-    for (const block of blueprintData) {
-      if (block.x === 60 && block.y === 160 && block.z === -89) {
-        console.log("Found block at 60,160,-89", block);
-      }
-    }
 
     await dustClient.provider.request({
       method: "setBlueprint",
@@ -92,13 +87,33 @@ export function Blueprint() {
     );
   }
 
+  // TODO: prettier styling for the leaderboard Blueprint contributions:
   return (
     <div className="flex flex-col h-screen justify-between">
       <p className="pt-10 px-10">
         <img src="/10-years-ethereum.png" alt="Ethereum 10th Anniversary" />
         <br />
-        Now build the monument by following the blueprint!
+        Follow the blueprint to construct the monument.
         <br />
+        <br />
+        <div className="flex flex-col gap-2">
+          {blueprintContributions.map((contribution) => (
+            <div key={contribution.player}>
+              {contribution.player.slice(0, 6)}...
+              {contribution.player.slice(-4)}:
+              {String(contribution.contribution)}
+            </div>
+          ))}
+        </div>
+        Energy contributions:
+        <div className="flex flex-col gap-2">
+          {energyContributions.map((contribution) => (
+            <div key={contribution.player}>
+              {contribution.player.slice(0, 6)}...
+              {contribution.player.slice(-4)}: {String(contribution.energy)}
+            </div>
+          ))}
+        </div>
       </p>
     </div>
   );
