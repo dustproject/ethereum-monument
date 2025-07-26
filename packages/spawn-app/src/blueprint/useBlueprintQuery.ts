@@ -36,21 +36,11 @@ async function fetchBlueprint({
 
 export function useBlueprintQuery({
   playerPosition,
-  cursorPosition,
 }: {
   playerPosition: { x: number; y: number; z: number };
-  cursorPosition: { x: number; y: number; z: number } | null;
 }) {
   return useQuery({
-    queryKey: [
-      "blueprint",
-      playerPosition.x,
-      playerPosition.y,
-      playerPosition.z,
-      cursorPosition?.x,
-      cursorPosition?.y,
-      cursorPosition?.z,
-    ],
+    queryKey: ["blueprint"],
     queryFn: async () => {
       const lowermostVoxelCoord = [34, 75, -93] as const;
       const lowermostChunkCoord = toChunkCoord(lowermostVoxelCoord);
@@ -80,12 +70,6 @@ export function useBlueprintQuery({
       return combinedBlueprint;
     },
     placeholderData: keepPreviousData,
-    // TODO: how can we make this not refetch?
-    refetchOnMount: false,
-    refetchOnWindowFocus: false,
-    refetchOnReconnect: false,
-    refetchIntervalInBackground: false,
-    refetchInterval: 1000 * 60 * 60,
     staleTime: 1000 * 60 * 60,
     enabled: !!playerPosition.x && !!playerPosition.y && !!playerPosition.z,
     retry: false,
