@@ -9,10 +9,10 @@ import type { Chunk } from "./encodeBlueprintChunks";
 import { encodeBlueprintChunks, groupByChunk } from "./encodeBlueprintChunks";
 
 const ID_MAP: Record<number, number> = {
-  [63]: 42, // border acacia leaf -> yellow terracotta
-  [62]: 40, // spruce leaf -> white terracotta
-  [58]: 40, // oak leaf -> white terracotta
-  [59]: 40, // birch leaf -> white terracotta
+  [63]: 37, // border acacia leaf -> terracotta
+  [62]: 37, // spruce leaf -> terracotta
+  [58]: 37, // oak leaf -> terracotta
+  [59]: 37, // birch leaf -> terracotta
 } as const;
 
 async function readBlueprint(filePath: string): Promise<Block[]> {
