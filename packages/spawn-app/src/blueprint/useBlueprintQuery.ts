@@ -1,36 +1,33 @@
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import {} from "@dust/world/internal";
 
 const isDev = import.meta.env.MODE === "development";
 const workerUrl = isDev
   ? "http://localhost:3002"
   : "https://monument-blueprint-worker.latticexyz.workers.dev";
 
-async function fetchPlayerPositionBlueprint(playerPosition: {
-  x: number;
-  y: number;
-  z: number;
-}) {
-  try {
-    const response = await fetch(
-      `${workerUrl}/?x=${playerPosition.x}&y=${playerPosition.y}&z=${playerPosition.z}`
-    );
-    return response.json();
-  } catch (error) {
-    console.error(error);
-    return [];
-  }
+function toChunkCoord(
+  voxel: readonly [number, number, number]
+): [number, number, number] {
+  return [
+    Math.floor(voxel[0] / 16),
+    Math.floor(voxel[1] / 16),
+    Math.floor(voxel[2] / 16),
+  ];
 }
 
-async function fetchCursorBlueprint(cursorPosition: {
+async function fetchBlueprint({
+  x,
+  y,
+  z,
+}: {
   x: number;
   y: number;
   z: number;
 }) {
   try {
-    const response = await fetch(
-      `${workerUrl}/?x=${cursorPosition.x}&y=${cursorPosition.y}&z=${cursorPosition.z}`
-    );
-    return response.json();
+    const response = await fetch(`${workerUrl}/?x=${x}&y=${y}&z=${z}`);
+    return await response.json();
   } catch (error) {
     console.error(error);
     return [];
@@ -55,37 +52,22 @@ export function useBlueprintQuery({
       cursorPosition?.z,
     ],
     queryFn: async () => {
-      const lowermostCoord = [34, 75, -93];
-      const lowermostChunkCoord = [
-        Math.floor(lowermostCoord[0] / 16),
-        Math.floor(lowermostCoord[1] / 16),
-        Math.floor(lowermostCoord[2] / 16),
-      ];
-      const uppermostCoord = [85, 162, -92];
-      const uppermostCoordChunkCoord = [
-        Math.floor(uppermostCoord[0] / 16),
-        Math.floor(uppermostCoord[1] / 16),
-        Math.floor(uppermostCoord[2] / 16),
-      ];
-      const blueprintPromise: Promise[] = [];
-      for (
-        let x = lowermostChunkCoord[0];
-        x <= uppermostCoordChunkCoord[0];
-        x++
-      ) {
-        for (
-          let y = lowermostChunkCoord[1];
-          y <= uppermostCoordChunkCoord[1];
-          y++
-        ) {
+      const lowermostVoxelCoord = [34, 75, -93] as const;
+      const lowermostChunkCoord = toChunkCoord(lowermostVoxelCoord);
+      const uppermostVoxelCoord = [85, 162, -92] as const;
+      const uppermostChunkCoord = toChunkCoord(uppermostVoxelCoord);
+
+      const blueprintPromise: Promise<unknown>[] = [];
+      for (let x = lowermostChunkCoord[0]; x <= uppermostChunkCoord[0]; x++) {
+        for (let y = lowermostChunkCoord[1]; y <= uppermostChunkCoord[1]; y++) {
           for (
             let z = lowermostChunkCoord[2];
-            z <= uppermostCoordChunkCoord[2];
+            z <= uppermostChunkCoord[2];
             z++
           ) {
             const chunkPosition = { x, y, z };
             console.log("fetching chunk at", chunkPosition);
-            const chunkBlueprint = fetchPlayerPositionBlueprint(chunkPosition);
+            const chunkBlueprint = fetchBlueprint(chunkPosition);
             blueprintPromise.push(chunkBlueprint);
           }
         }
@@ -94,14 +76,17 @@ export function useBlueprintQuery({
       console.log("waiting for all blueprints to resolve");
       const allBlueprints = await Promise.all(blueprintPromise);
       console.log("allBlueprints", allBlueprints);
-      let finalBlueprint = [];
-      for (const blueprint of allBlueprints) {
-        finalBlueprint = [...finalBlueprint, ...(blueprint ?? [])];
-      }
-      return finalBlueprint;
+      const combinedBlueprint = allBlueprints.flat();
+      return combinedBlueprint;
     },
     placeholderData: keepPreviousData,
-    refetchIntervalInBackground: true,
+    // TODO: how can we make this not refetch?
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    refetchIntervalInBackground: false,
+    refetchInterval: 1000 * 60 * 60,
+    staleTime: 1000 * 60 * 60,
     enabled: !!playerPosition.x && !!playerPosition.y && !!playerPosition.z,
     retry: false,
   });
