@@ -60,8 +60,8 @@ export function Blueprint() {
       method: "setWaypoint",
       params: {
         entity:
-          "0x030000023900000093fffffa1100000000000000000000000000000000000000",
-        label: "Permutation City",
+          "0x030000003c000000a1ffffffa700000000000000000000000000000000000000",
+        label: "Ethereum Monument",
       },
     });
   };
@@ -75,7 +75,7 @@ export function Blueprint() {
           className="text-[#FAE792]"
           onClick={handleAddWaypoint}
         >
-          (569, 147, -1519)
+          (60, 161, -89)
         </button>{" "}
         to build the monument.
       </p>
