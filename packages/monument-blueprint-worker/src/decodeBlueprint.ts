@@ -163,7 +163,7 @@ export function decodeBlueprint(chunkCoord: ReadonlyVec3, data: Hex | Uint8Array
 		}
 	}
 
-	return blocks;
+	return blocks.filter((block) => block.id !== 0); // Filter out null blocks
 }
 
 // Function to decode from an address pointer (for single-type encoding)
