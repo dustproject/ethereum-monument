@@ -91,11 +91,8 @@ export function Blueprint() {
       <p className="pt-10 px-10">
         <img src="/10-years-ethereum.png" alt="Ethereum 10th Anniversary" />
         <br />
-        Come over to the Ethereum Monument{" "}
-        <button type="button" className="underline" onClick={handleAddWaypoint}>
-          (60, 161, -89)
-        </button>{" "}
-        and build the monument together!
+        Now build the monument by following the blueprint!
+        <br />
       </p>
     </div>
   );
