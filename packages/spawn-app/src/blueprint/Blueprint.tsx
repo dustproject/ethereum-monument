@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo } from "react";
-import { formatEther, type Hex } from "viem";
+import { type Hex } from "viem";
 import { objects } from "@dust/world/internal";
 import { usePlayerPositionQuery } from "./usePlayerPositionQuery";
 import { useBlueprintQuery } from "./useBlueprintQuery";
