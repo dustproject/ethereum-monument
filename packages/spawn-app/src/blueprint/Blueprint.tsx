@@ -133,12 +133,12 @@ export function Blueprint() {
               alt="Battery"
               className="inline-block w-5 h-5 -mt-[5px]"
             />{" "}
-            to the monument&apos;s force field.
+            to energize the monument&apos;s force field.
           </p>
         </div>
 
         <div className="pt-8">
-          <h2 className="text-lg font-bold pb-1">Blueprint contributors:</h2>
+          <h2 className="text-lg font-bold pb-1">Energy contributors:</h2>
           <div className="flex flex-col gap-2">
             {!blueprintContributions.length && (
               <p className="text-black/70">No blueprint contributions yet.</p>
