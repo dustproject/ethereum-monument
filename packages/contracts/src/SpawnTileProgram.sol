@@ -19,11 +19,12 @@ import { EnergyContribution } from "./codegen/tables/EnergyContribution.sol";
 import { ForceFieldDamage } from "./codegen/tables/ForceFieldDamage.sol";
 import { SpawnEnergyConsumed } from "./codegen/tables/SpawnEnergyConsumed.sol";
 import { getForceField } from "./utils/getForceField.sol";
+import { Constants } from "./Constants.sol";
 
 uint128 constant MIN_ENERGY_THRESHOLD_TO_SPAWN = 10_000_000_000_000_000_000;
 uint256 constant FREE_SPAWNS = 2;
 
-contract SpawnTileProgram is IAttachProgram, IDetachProgram, ISpawn, System, WorldConsumer(IWorld(address(0))) {
+contract SpawnTileProgram is IAttachProgram, IDetachProgram, ISpawn, System, WorldConsumer(Constants.DUST_WORLD) {
   function onAttachProgram(HookContext calldata ctx) public view override onlyWorld {
     address player = ctx.caller.getPlayerAddress();
     require(Admin.get(player), "Only admin can attach this program");

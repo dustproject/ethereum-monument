@@ -38,6 +38,10 @@ struct RootCallWrapper {
 library ForceFieldProgramLib {
   error ForceFieldProgramLib_CallingFromRootSystem();
 
+  function setAccessGroup(ForceFieldProgramType self) internal {
+    return CallWrapper(self.toResourceId(), address(0)).setAccessGroup();
+  }
+
   function validateProgram(
     ForceFieldProgramType self,
     HookContext memory ctx,
@@ -96,6 +100,16 @@ library ForceFieldProgramLib {
 
   function _msgValue(ForceFieldProgramType self) internal view returns (uint256 __auxRet0) {
     return CallWrapper(self.toResourceId(), address(0))._msgValue();
+  }
+
+  function setAccessGroup(CallWrapper memory self) internal {
+    // if the contract calling this function is a root system, it should use `callAsRoot`
+    if (address(_world()) == address(this)) revert ForceFieldProgramLib_CallingFromRootSystem();
+
+    bytes memory systemCall = abi.encodeCall(_setAccessGroup.setAccessGroup, ());
+    self.from == address(0)
+      ? _world().call(self.systemId, systemCall)
+      : _world().callFrom(self.from, self.systemId, systemCall);
   }
 
   function validateProgram(
@@ -264,6 +278,11 @@ library ForceFieldProgramLib {
     }
   }
 
+  function setAccessGroup(RootCallWrapper memory self) internal {
+    bytes memory systemCall = abi.encodeCall(_setAccessGroup.setAccessGroup, ());
+    SystemCall.callWithHooksOrRevert(self.from, self.systemId, systemCall, msg.value);
+  }
+
   function validateProgram(
     RootCallWrapper memory self,
     HookContext memory ctx,
@@ -394,6 +413,10 @@ library ForceFieldProgramLib {
  *
  * Each interface is uniquely named based on the function name and parameters to prevent collisions.
  */
+
+interface _setAccessGroup {
+  function setAccessGroup() external;
+}
 
 interface _validateProgram_HookContext_IProgramValidator_ProgramData {
   function validateProgram(HookContext memory ctx, IProgramValidator.ProgramData memory __auxArg0) external;

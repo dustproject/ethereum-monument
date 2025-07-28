@@ -10,6 +10,10 @@ import { WorldResourceIdInstance } from "@latticexyz/world/src/WorldResourceId.s
 import { console } from "forge-std/console.sol";
 
 import { forceFieldProgram } from "../src/codegen/systems/ForceFieldProgramLib.sol";
+import { Systems } from "@latticexyz/world/src/codegen/tables/Systems.sol";
+import { EntityId, EntityTypeLib } from "@dust/world/src/types/EntityId.sol";
+import { ForceField } from "../src/codegen/tables/ForceField.sol";
+import { defaultProgramSystem } from "@dust/programs/src/codegen/systems/DefaultProgramSystemLib.sol";
 
 address constant ADMIN = 0xE0ae70caBb529336e25FA7a1f036b77ad0089d2a;
 
@@ -18,8 +22,17 @@ contract PostDeploy is Script {
 
   function run(address worldAddress) external {
     StoreSwitch.setStoreAddress(worldAddress);
-
     address sender = startBroadcast();
+
+    // TODO: call this onAttach
+    // (address programAddress, ) = Systems.get(forceFieldProgram.toResourceId());
+    // (bool success, ) = programAddress.call(abi.encodeWithSignature("setAccessGroup()"));
+    // require(success, "setAccessGroup() failed");
+    // EntityId forceField = ForceField.get();
+    // if (forceField.unwrap() != 0) {
+    //   defaultProgramSystem.setMembership(forceField, ADMIN, true);
+    // }
+
     console.log("Setting admin", ADMIN);
     Admin.set(ADMIN, true);
     console.log("Setting admin", sender);

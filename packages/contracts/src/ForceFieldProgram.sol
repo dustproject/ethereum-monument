@@ -21,8 +21,10 @@ import { EnergyContribution } from "./codegen/tables/EnergyContribution.sol";
 import { ForceFieldDamage } from "./codegen/tables/ForceFieldDamage.sol";
 
 import { ForceField } from "./codegen/tables/ForceField.sol";
+import { defaultProgramSystem } from "@dust/programs/src/codegen/systems/DefaultProgramSystemLib.sol";
 
 import { BlueprintLib } from "./BlueprintLib.sol";
+import { Constants } from "./Constants.sol";
 
 contract ForceFieldProgram is
   IAttachProgram,
@@ -35,8 +37,15 @@ contract ForceFieldProgram is
   IBuild,
   IMine,
   System,
-  WorldConsumer(IWorld(address(0)))
+  WorldConsumer(Constants.DUST_WORLD)
 {
+  function setAccessGroup() external {
+    require(Admin.get(_msgSender()), "Only admin can set access groups");
+    EntityId forceField = ForceField.get();
+    require(forceField.unwrap() != 0, "Force field not set");
+    defaultProgramSystem.setAccessGroup(forceField, _msgSender());
+  }
+
   function validateProgram(HookContext calldata ctx, ProgramData calldata) external view {
     address player = ctx.caller.getPlayerAddress();
     require(Admin.get(player), "Only admin can attach programs");
