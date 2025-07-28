@@ -5,9 +5,10 @@ procs:
     shell: wait-on -l ../../../dust/packages/world/deploys/31337/latest.json && pnpm run deploy:local
   app:
     cwd: packages/spawn-app
-    shell: pnpm run dev --port 3011
+    shell: pnpm run dev --port 3001
   worker:
     cwd: packages/monument-blueprint-worker
     shell: pnpm wrangler dev --port 3012
   tunnel:
-    shell: cloudflared tunnel run --token-file .cloudflare
+    # shell: cloudflared tunnel run --token-file .cloudflare
+    shell: cloudflared tunnel run

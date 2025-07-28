@@ -15,7 +15,7 @@ export function Spawn() {
 
   return (
     <div className="flex flex-col h-screen justify-between">
-      <p className="pt-10 px-10">
+      <p className="pt-8 px-6">
         <img src="/10-years-ethereum.png" alt="Ethereum 10th Anniversary" />
         <br />
         In honor of Ethereum's 10 year anniversary, we are building an immortal
