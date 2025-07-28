@@ -117,7 +117,7 @@ contract ForceFieldProgram is
       uint256 current = BlueprintContribution.get(player, blueprintType);
       BlueprintContribution.set(player, blueprintType, current + 1);
     } else {
-      require(build.objectType == ObjectTypes.Dirt, "Only dirt scaffold can be built here");
+      require(build.objectType == ObjectTypes.Dirt, "Object does not match blueprint, can only build scaffold here");
     }
   }
 
