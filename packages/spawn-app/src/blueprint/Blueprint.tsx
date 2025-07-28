@@ -169,7 +169,15 @@ export function Blueprint() {
                 className="flex gap-2 justify-between items-center"
               >
                 <PlayerName address={contribution.player} />
-                {formatEther(contribution.energy)}
+                {contribution.energy > 0
+                  ? new Intl.NumberFormat("en-US", {
+                      maximumFractionDigits: 2,
+                    }).format(
+                      Number(
+                        (BigInt(contribution.energy) / 10n ** 14n).toString()
+                      )
+                    )
+                  : "0"}
               </div>
             ))}
           </div>
