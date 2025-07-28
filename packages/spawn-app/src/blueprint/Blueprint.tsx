@@ -138,7 +138,7 @@ export function Blueprint() {
         </div>
 
         <div className="pt-8">
-          <h2 className="text-lg font-bold pb-1">Energy contributors:</h2>
+          <h2 className="text-lg font-bold pb-1">Blueprint contributors:</h2>
           <div className="flex flex-col gap-2">
             {!blueprintContributions.length && (
               <p className="text-black/70">No blueprint contributions yet.</p>
@@ -157,7 +157,7 @@ export function Blueprint() {
         </div>
 
         <div className="pt-8">
-          <h2 className="text-lg font-bold pb-1">Battery contributors:</h2>
+          <h2 className="text-lg font-bold pb-1">Energy contributors:</h2>
           <div className="flex flex-col gap-2">
             {!energyContributions.length && (
               <p className="text-black/70">No battery contributions yet.</p>
