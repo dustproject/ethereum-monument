@@ -111,6 +111,10 @@ async function main() {
     let voxels = await readBlueprint(filePath);
     console.log(`Loaded ${voxels.length} blocks`);
 
+    // Filter blocks to only keep those with z coordinate -92
+    voxels = voxels.filter((block) => block.coord[2] === -92);
+    console.log(`Filtered to ${voxels.length} blocks with z=-92`);
+
     // Map ids to the actual materials
     voxels = voxels.map((block) => ({
       ...block,
