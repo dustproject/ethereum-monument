@@ -103,7 +103,7 @@ export function Blueprint() {
             className="underline"
             onClick={handleAddWaypoint}
           >
-            (57, 64, -88)
+            (57, 63, -87)
           </button>{" "}
           and build the monument together!
         </p>
@@ -125,7 +125,7 @@ export function Blueprint() {
               className="font-semibold cursor-pointer"
               onClick={handleAddWaypoint}
             >
-              (60, 161, -89) 📍
+              (57, 63, -87) 📍
             </span>
             . Supply batteries{" "}
             <img
