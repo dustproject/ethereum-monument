@@ -117,7 +117,10 @@ contract ForceFieldProgram is
     }
 
     (ObjectType blueprintType, Orientation orientation) = BlueprintLib.getBlock(build.coord);
-    require(blueprintType != ObjectTypes.Null, "Blueprint not set for coord");
+    if (blueprintType == ObjectTypes.Null) {
+      require(build.objectType == ObjectTypes.Dirt, "Can only build scaffold here");
+      return;
+    }
 
     EntityId blockEntityId = EntityTypeLib.encodeBlock(build.coord);
     require(EntityOrientation.get(blockEntityId) == orientation, "Wrong blueprint direction");

@@ -150,7 +150,7 @@ export function Blueprint() {
                 className="flex gap-2 justify-between items-center"
               >
                 <PlayerName address={contribution.player} />
-                {formatEther(contribution.contribution)}
+                {contribution.contribution.toString()}
               </div>
             ))}
           </div>
