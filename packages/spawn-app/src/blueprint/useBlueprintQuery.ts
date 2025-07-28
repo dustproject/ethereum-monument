@@ -3,7 +3,7 @@ import {} from "@dust/world/internal";
 
 const isDev = import.meta.env.MODE === "development";
 const workerUrl = isDev
-  ? "http://localhost:3002"
+  ? "http://localhost:3012"
   : "https://monument-blueprint-worker.latticexyz.workers.dev";
 
 function toChunkCoord(
@@ -73,7 +73,6 @@ export function useBlueprintQuery({
 
       console.log("waiting for all blueprints to resolve");
       const allBlueprints = await Promise.all(blueprintPromise);
-      console.log("allBlueprints", allBlueprints);
       const combinedBlueprint = allBlueprints.flat();
       return combinedBlueprint;
     },
