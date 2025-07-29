@@ -118,7 +118,10 @@ contract ForceFieldProgram is
 
     (ObjectType blueprintType, Orientation orientation) = BlueprintLib.getBlock(build.coord);
     if (blueprintType == ObjectTypes.Null) {
-      require(build.objectType == ObjectTypes.Dirt, "Can only build dirt as scaffold here");
+      require(
+        build.objectType == ObjectTypes.Dirt || build.objectType == ObjectTypes.Moss,
+        "Can only build dirt/moss as scaffold here"
+      );
       return;
     }
 
@@ -130,8 +133,8 @@ contract ForceFieldProgram is
       BlueprintContribution.set(player, blueprintType, current + 1);
     } else {
       require(
-        build.objectType == ObjectTypes.Dirt,
-        "Object does not match blueprint, can only build dirt as scaffold here"
+        build.objectType == ObjectTypes.Dirt || build.objectType == ObjectTypes.Moss,
+        "Object does not match blueprint, can only build dirt/moss as scaffold here"
       );
     }
   }
@@ -147,8 +150,8 @@ contract ForceFieldProgram is
 
     (ObjectType blueprintType, ) = BlueprintLib.getBlock(mine.coord);
     if (blueprintType == ObjectTypes.Null) {
-      if (mine.objectType == ObjectTypes.Dirt) {
-        return; // Allow mining dirt if no blueprint is set
+      if (mine.objectType == ObjectTypes.Dirt || mine.objectType == ObjectTypes.Moss) {
+        return; // Allow mining dirt/moss if no blueprint is set
       }
       revert("Not allowed to mine here");
     }
