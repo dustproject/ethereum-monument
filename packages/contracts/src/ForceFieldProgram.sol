@@ -146,7 +146,12 @@ contract ForceFieldProgram is
     require(!mine.objectType.isSmartEntity(), "Cannot mine smart entities");
 
     (ObjectType blueprintType, ) = BlueprintLib.getBlock(mine.coord);
-    require(blueprintType != ObjectTypes.Null, "Not allowed to mine here");
+    if (blueprintType == ObjectTypes.Null) {
+      if (mine.objectType == ObjectTypes.Dirt) {
+        return; // Allow mining dirt if no blueprint is set
+      }
+      revert("Not allowed to mine here");
+    }
 
     require(mine.objectType != blueprintType, "Not allowed by blueprint");
   }
