@@ -118,7 +118,7 @@ contract ForceFieldProgram is
 
     (ObjectType blueprintType, Orientation orientation) = BlueprintLib.getBlock(build.coord);
     if (blueprintType == ObjectTypes.Null) {
-      require(build.objectType == ObjectTypes.Dirt, "Can only build scaffold here");
+      require(build.objectType == ObjectTypes.Dirt, "Can only build dirt as scaffold here");
       return;
     }
 
@@ -129,7 +129,10 @@ contract ForceFieldProgram is
       uint256 current = BlueprintContribution.get(player, blueprintType);
       BlueprintContribution.set(player, blueprintType, current + 1);
     } else {
-      require(build.objectType == ObjectTypes.Dirt, "Object does not match blueprint, can only build scaffold here");
+      require(
+        build.objectType == ObjectTypes.Dirt,
+        "Object does not match blueprint, can only build dirt as scaffold here"
+      );
     }
   }
 
