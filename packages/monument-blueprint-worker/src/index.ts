@@ -3,7 +3,7 @@ import { http, type Hex, createPublicClient, sliceHex } from 'viem';
 import { redstone } from 'viem/chains';
 import { type ReadonlyVec3, decodeBlueprint, decodePointer, fromHexString } from './decodeBlueprint';
 
-const version = 6;
+const version = 7;
 
 const publicClient = createPublicClient({
 	chain: redstone,
