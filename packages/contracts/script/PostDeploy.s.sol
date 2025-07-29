@@ -15,7 +15,7 @@ import { EntityId, EntityTypeLib } from "@dust/world/src/types/EntityId.sol";
 import { ForceField } from "../src/codegen/tables/ForceField.sol";
 import { defaultProgramSystem } from "@dust/programs/src/codegen/systems/DefaultProgramSystemLib.sol";
 
-address constant ADMIN = 0xE0ae70caBb529336e25FA7a1f036b77ad0089d2a;
+address constant ADMIN = 0xe1938cee72C377AA12a294B12bDA9D61EE2E3A95;
 
 contract PostDeploy is Script {
   using WorldResourceIdInstance for ResourceId;
