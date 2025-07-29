@@ -55,12 +55,15 @@ contract SpawnTileProgram is IAttachProgram, IDetachProgram, ISpawn, System, Wor
 
     uint256 spawnCount = SpawnCount.get(player);
 
-    if (spawnCount > FREE_SPAWNS) {
+    if (spawnCount >= FREE_SPAWNS) {
       uint128 energyConsumed = SpawnEnergyConsumed.get(player);
       uint256 energyContributed = EnergyContribution.get(player);
 
       uint256 availableEnergy = energyContributed - energyConsumed;
-      require(spawn.energy <= availableEnergy, "Not enough energy contributed");
+      require(
+        spawn.energy <= availableEnergy,
+        "You've used up all your free spawns. Now you need to energize the Ethereum monument to spawn there."
+      );
       SpawnEnergyConsumed.set(player, energyConsumed + spawn.energy);
     }
 
