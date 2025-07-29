@@ -8,7 +8,7 @@ procs:
     shell: wait-on -l deploys/31337/latest.json && pnpm run admin:registerApp:local
   app:
     cwd: packages/spawn-app
-    shell: pnpm run dev --port 3001
+    shell: pnpm run dev --port 3011
   worker:
     cwd: packages/monument-blueprint-worker
     shell: pnpm wrangler dev --port 3012
