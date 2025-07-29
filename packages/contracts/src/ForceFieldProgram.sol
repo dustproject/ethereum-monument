@@ -112,14 +112,12 @@ contract ForceFieldProgram is
 
   function onBuild(HookContext calldata ctx, BuildData calldata build) external onlyWorld {
     address player = ctx.caller.getPlayerAddress();
-    if (Admin.get(player)) {
-      return;
-    }
+    bool isAdmin = Admin.get(player);
 
     (ObjectType blueprintType, Orientation orientation) = BlueprintLib.getBlock(build.coord);
     if (blueprintType == ObjectTypes.Null) {
       require(
-        build.objectType == ObjectTypes.Dirt || build.objectType == ObjectTypes.Moss,
+        isAdmin || build.objectType == ObjectTypes.Dirt || build.objectType == ObjectTypes.Moss,
         "Can only build dirt/moss as scaffold here"
       );
       return;
@@ -141,16 +139,14 @@ contract ForceFieldProgram is
 
   function onMine(HookContext calldata ctx, MineData calldata mine) external view onlyWorld {
     address player = ctx.caller.getPlayerAddress();
-    if (Admin.get(player)) {
-      return;
-    }
+    bool isAdmin = Admin.get(player);
 
     // Additional protection for smart entities
-    require(!mine.objectType.isSmartEntity(), "Cannot mine smart entities");
+    require(isAdmin || !mine.objectType.isSmartEntity(), "Cannot mine smart entities");
 
     (ObjectType blueprintType, ) = BlueprintLib.getBlock(mine.coord);
     if (blueprintType == ObjectTypes.Null) {
-      if (mine.objectType == ObjectTypes.Dirt || mine.objectType == ObjectTypes.Moss) {
+      if (isAdmin || mine.objectType == ObjectTypes.Dirt || mine.objectType == ObjectTypes.Moss) {
         return; // Allow mining dirt/moss if no blueprint is set
       }
       revert("Not allowed to mine here");
