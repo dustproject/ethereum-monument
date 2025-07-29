@@ -150,7 +150,14 @@ export function Blueprint() {
                 className="flex gap-2 justify-between items-center"
               >
                 <PlayerName address={contribution.player} />
-                {contribution.contribution.toString()}
+                <div className="flex gap-2 items-center">
+                  <span>{contribution.contribution.toString()}</span>
+                  <img
+                    src={getObjectImageUrl(contribution.objectType)}
+                    alt={`Contribution object ${contribution.objectType}`}
+                    className="w-5 h-5"
+                  />
+                </div>
               </div>
             ))}
           </div>
