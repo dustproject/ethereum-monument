@@ -19,17 +19,14 @@ contract RegisterApp is Script {
     startBroadcast();
 
     ResourceId appNamespaceId = WorldResourceIdLib.encodeNamespace("eth_monument");
+    string memory appUrl = "https://ethereum-monument.vercel.app/dust-app.json";
+    if (block.chainid == 31337) {
+      appUrl = "http://localhost:3001/dust-app.json";
+    }
+    console.log("Registering app with url: %s", appUrl);
 
-    metadataSystem.setResourceTag(
-      appNamespaceId,
-      "appConfigUrl",
-      bytes("https://ethereum-monument.vercel.app/dust-app.json")
-    );
-    metadataSystem.setResourceTag(
-      appNamespaceId,
-      "spawnAppConfigUrl",
-      bytes("https://ethereum-monument.vercel.app/dust-app.json")
-    );
+    metadataSystem.setResourceTag(appNamespaceId, "dust.appConfigUrl", bytes(appUrl));
+    metadataSystem.setResourceTag(appNamespaceId, "dust.spawnAppConfigUrl", bytes(appUrl));
 
     vm.stopBroadcast();
   }

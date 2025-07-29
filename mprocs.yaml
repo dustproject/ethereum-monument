@@ -3,6 +3,9 @@ procs:
   contracts:
     cwd: packages/contracts
     shell: wait-on -l ../../../dust/packages/world/deploys/31337/latest.json && pnpm run deploy:local
+  register-app:
+    cwd: packages/contracts
+    shell: wait-on -l deploys/31337/latest.json && pnpm run admin:registerApp:local
   app:
     cwd: packages/spawn-app
     shell: pnpm run dev --port 3001

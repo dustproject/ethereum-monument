@@ -11,7 +11,7 @@
     "get:blueprint": "tsx ./ts/scripts/getBlueprint.ts",
     "admin:blueprint:local": ". ./set-env.sh local && forge script SetBlueprint --sig 'run(string)'",
     "admin:blueprint:redstone": ". ./set-env.sh redstone && forge script SetBlueprint --aws --sig 'run(string)'",
-    "admin:registerApp:local": ". ./set-env.sh local && forge script RegisterApp -- $WORLD_ADDRESS",
+    "admin:registerApp:local": ". ./set-env.sh local && forge script RegisterApp --broadcast --sig 'run(address)' -- $WORLD_ADDRESS",
     "admin:registerApp:redstone": ". ./set-env.sh redstone && forge script RegisterApp --aws --sig 'run(address)' -- $WORLD_ADDRESS",
     "encodeBlueprint": "tsx ./ts/scripts/encodeBlueprint.ts",
     "lint": "pnpm run prettier && pnpm run solhint",
