@@ -46,6 +46,10 @@ contract ForceFieldProgram is
     defaultProgramSystem.setAccessGroup(forceField, _msgSender());
   }
 
+  function isScaffold(ObjectType objectType) internal pure returns (bool) {
+    return objectType == ObjectTypes.Dirt || objectType == ObjectTypes.Moss || objectType.isLeaf();
+  }
+
   function validateProgram(HookContext calldata ctx, ProgramData calldata) external view {
     address player = ctx.caller.getPlayerAddress();
     require(Admin.get(player), "Only admin can attach programs");
@@ -116,10 +120,7 @@ contract ForceFieldProgram is
 
     (ObjectType blueprintType, Orientation orientation) = BlueprintLib.getBlock(build.coord);
     if (blueprintType == ObjectTypes.Null) {
-      require(
-        isAdmin || build.objectType == ObjectTypes.Dirt || build.objectType == ObjectTypes.Moss,
-        "Can only build dirt/moss as scaffold here"
-      );
+      require(isAdmin || isScaffold(build.objectType), "Can only build dirt/moss/leaf as scaffold here");
       return;
     }
 
@@ -131,8 +132,8 @@ contract ForceFieldProgram is
       BlueprintContribution.set(player, blueprintType, current + 1);
     } else {
       require(
-        build.objectType == ObjectTypes.Dirt || build.objectType == ObjectTypes.Moss,
-        "Object does not match blueprint, can only build dirt/moss as scaffold here"
+        isScaffold(build.objectType),
+        "Object does not match blueprint, can only build dirt/moss/leaf as scaffold here"
       );
     }
   }
@@ -146,7 +147,7 @@ contract ForceFieldProgram is
 
     (ObjectType blueprintType, ) = BlueprintLib.getBlock(mine.coord);
     if (blueprintType == ObjectTypes.Null) {
-      if (isAdmin || mine.objectType == ObjectTypes.Dirt || mine.objectType == ObjectTypes.Moss) {
+      if (isAdmin || isScaffold(mine.objectType)) {
         return; // Allow mining dirt/moss if no blueprint is set
       }
       revert("Not allowed to mine here");
