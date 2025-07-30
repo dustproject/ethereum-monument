@@ -11,7 +11,8 @@ import { useBlueprintContributions } from "./useBlueprintContributions.ts";
 
 export function Blueprint() {
   const { data: playerPosition } = usePlayerPositionQuery();
-  const blueprintContributions = useBlueprintContributions();
+  const { groupedBlueprintContributions, blueprintContributions } =
+    useBlueprintContributions();
   const energyContributions = useEnergyContributions();
 
   const {
@@ -34,6 +35,28 @@ export function Blueprint() {
         z: chunkZ,
       },
     });
+
+  const blueprintCountByBlock = useMemo(() => {
+    return blueprintData?.reduce(
+      (acc, block) => {
+        acc[block.objectTypeId] = (acc[block.objectTypeId] || 0) + 1;
+        return acc;
+      },
+      {} as Record<number, number>
+    );
+  }, [blueprintData]);
+
+  const contributionsCountByBlock = useMemo(() => {
+    return blueprintContributions.reduce(
+      (acc, contribution) => {
+        acc[contribution.objectType] =
+          (acc[contribution.objectType] || 0) +
+          Number(contribution.contribution);
+        return acc;
+      },
+      {} as Record<number, number>
+    );
+  }, [blueprintContributions]);
 
   const setBlueprint = useCallback(async () => {
     if (!dustClient || !blueprintData) return;
@@ -126,14 +149,13 @@ export function Blueprint() {
               <p className="text-black/70">No blueprint contributions yet.</p>
             )}
 
-            {blueprintContributions.map((contribution) => (
+            {groupedBlueprintContributions.map((contribution) => (
               <div
                 key={contribution.player}
                 className="flex gap-2 justify-between items-center"
               >
                 <AccountName address={contribution.player} />
                 <div className="flex gap-2 items-center">
-                  {/* <span>{contribution.totalContribution.toString()}</span> */}
                   <div className="flex gap-4">
                     {Object.entries(contribution.objectTypes).map(
                       ([objectType, count]) => (
@@ -141,7 +163,6 @@ export function Blueprint() {
                           key={objectType}
                           className="flex items-center gap-0.5 relative"
                         >
-                          {/* <span className="text-sm">{count.toString()}</span> */}
                           <img
                             src={getObjectImageUrl(Number(objectType))}
                             alt={`Contribution object ${objectType}`}
@@ -213,6 +234,12 @@ export function Blueprint() {
                   <span>
                     {isAir ? "Mine" : camelToSpaces(object?.name ?? "")}
                   </span>
+                  {!isAir && (
+                    <span className="text-black/50">
+                      ({contributionsCountByBlock?.[finalObjectTypeId] ?? 0} /{" "}
+                      {blueprintCountByBlock?.[finalObjectTypeId] ?? 0})
+                    </span>
+                  )}
                 </div>
               );
             })}

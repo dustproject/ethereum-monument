@@ -49,5 +49,8 @@ export function useBlueprintContributions() {
     );
   }, [blueprintContributions]);
 
-  return groupedBlueprintContributions;
+  return {
+    groupedBlueprintContributions,
+    blueprintContributions,
+  };
 }
