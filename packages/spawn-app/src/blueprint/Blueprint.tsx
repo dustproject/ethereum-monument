@@ -1,35 +1,18 @@
 import { useCallback, useEffect, useMemo } from "react";
-import { type Hex } from "viem";
 import { objects } from "@dust/world/internal";
 import { usePlayerPositionQuery } from "./usePlayerPositionQuery";
 import { useBlueprintQuery } from "./useBlueprintQuery";
 import { dustClient } from "../dustClient";
-import { useRecords } from "@latticexyz/stash/react";
-import { stash, tables } from "../mud/stash";
-import { useENS } from "./useENS";
-import { TruncatedHex } from "./TruncatedHex";
 import { getObjectImageUrl } from "./getObjectImageUrl";
 import { camelToSpaces } from "./camelToSpaces";
-
-function PlayerName({ address }: { address: Hex }) {
-  const { data: ens } = useENS(address);
-  return (
-    <span className="font-medium">
-      {ens?.displayName ?? <TruncatedHex hex={address} />}
-    </span>
-  );
-}
+import { AccountName } from "./AccountName";
+import { useEnergyContributions } from "./useEnergyContributions";
+import { useBlueprintContributions } from "./useBlueprintContributions.ts";
 
 export function Blueprint() {
   const { data: playerPosition } = usePlayerPositionQuery();
-  const blueprintContributions = useRecords({
-    stash,
-    table: tables.BlueprintContribution,
-  });
-  const energyContributions = useRecords({
-    stash,
-    table: tables.EnergyContribution,
-  });
+  const blueprintContributions = useBlueprintContributions();
+  const energyContributions = useEnergyContributions();
 
   const {
     x: chunkX,
@@ -111,7 +94,6 @@ export function Blueprint() {
     );
   }
 
-  // TODO: prettier styling for the leaderboard Blueprint contributions:
   return (
     <div className="flex flex-col h-screen justify-between">
       <div className="pt-8 px-6 pb-10">
@@ -149,14 +131,33 @@ export function Blueprint() {
                 key={contribution.player}
                 className="flex gap-2 justify-between items-center"
               >
-                <PlayerName address={contribution.player} />
+                <AccountName address={contribution.player} />
                 <div className="flex gap-2 items-center">
-                  <span>{contribution.contribution.toString()}</span>
-                  <img
-                    src={getObjectImageUrl(contribution.objectType)}
-                    alt={`Contribution object ${contribution.objectType}`}
-                    className="w-5 h-5"
-                  />
+                  {/* <span>{contribution.totalContribution.toString()}</span> */}
+                  <div className="flex gap-4">
+                    {Object.entries(contribution.objectTypes).map(
+                      ([objectType, count]) => (
+                        <div
+                          key={objectType}
+                          className="flex items-center gap-0.5 relative"
+                        >
+                          {/* <span className="text-sm">{count.toString()}</span> */}
+                          <img
+                            src={getObjectImageUrl(Number(objectType))}
+                            alt={`Contribution object ${objectType}`}
+                            className="w-6 h-6"
+                          />
+                          <span
+                            className="absolute -bottom-1 -right-2 w-5 h-4 place-self-end flex items-center
+                          justify-center bg-[#2c313d] rounded-full text-[9px]
+                          tabular-nums leading-none text-white backdrop-blur-lg opacity-85"
+                          >
+                            {count.toString()}
+                          </span>
+                        </div>
+                      )
+                    )}
+                  </div>
                 </div>
               </div>
             ))}
@@ -170,23 +171,25 @@ export function Blueprint() {
               <p className="text-black/70">No battery contributions yet.</p>
             )}
 
-            {energyContributions.map((contribution) => (
-              <div
-                key={contribution.player}
-                className="flex gap-2 justify-between items-center"
-              >
-                <PlayerName address={contribution.player} />
-                {contribution.energy > 0
-                  ? new Intl.NumberFormat("en-US", {
-                      maximumFractionDigits: 2,
-                    }).format(
-                      Number(
-                        (BigInt(contribution.energy) / 10n ** 14n).toString()
+            {energyContributions
+              .sort((a, b) => Number(b.energy) - Number(a.energy))
+              .map((contribution) => (
+                <div
+                  key={contribution.player}
+                  className="flex gap-2 justify-between items-center"
+                >
+                  <AccountName address={contribution.player} />
+                  {contribution.energy > 0
+                    ? new Intl.NumberFormat("en-US", {
+                        maximumFractionDigits: 2,
+                      }).format(
+                        Number(
+                          (BigInt(contribution.energy) / 10n ** 14n).toString()
+                        )
                       )
-                    )
-                  : "0"}
-              </div>
-            ))}
+                    : "0"}
+                </div>
+              ))}
           </div>
         </div>
 
